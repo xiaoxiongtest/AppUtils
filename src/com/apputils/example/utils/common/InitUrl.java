@@ -1,4 +1,4 @@
-package com.apputils.example.http;
+package com.apputils.example.utils.common;
 
 public class InitUrl {
     

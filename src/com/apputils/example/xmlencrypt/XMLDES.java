@@ -5,7 +5,7 @@ import java.security.Key;
 import javax.crypto.Cipher;
 
 public class XMLDES {
-    private static String strDefaultKey = "national";
+    private static String strDefaultKey = "xiaoxiaoxiong";
 
     private Cipher encryptCipher = null;
 

@@ -15,9 +15,9 @@ import com.apputils.example.dialog.DialogError;
 import com.apputils.example.dialog.DialogLoading;
 import com.apputils.example.dialog.Loading;
 import com.apputils.example.dialog.MsgDialog;
-import com.apputils.example.http.InitUrl;
 import com.apputils.example.utils.MLog;
 import com.apputils.example.utils.common.InitError;
+import com.apputils.example.utils.common.InitUrl;
 import com.apputils.example.xmlencrypt.XMLDES;
 import com.lidroid.xutils.http.client.HttpRequest.HttpMethod;
 
