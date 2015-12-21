@@ -1,6 +1,5 @@
 package com.apputils.example.utils;
 
-
 import com.apputils.example.http.MHttpUtils;
 
 import android.util.Log;
@@ -10,6 +9,7 @@ public class MLog {
 	public static String TAG_DEFAULT = "com.xpputils.default";
 	public static String TAG_HTTP = "com.xpputils.http";
 	public static String TAG_ABS = "com.xpputils.abs";
+	public static String TAG_IMG = "com.xpputils.img";
 
 	public static void V(String tag, String msg) {
 		if (MHttpUtils.INITCONFIG.getLog()) {
