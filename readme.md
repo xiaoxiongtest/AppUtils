@@ -112,6 +112,20 @@
 	// imageUrls 所有图片资源的url地址
 	// isAutoPlay 是否开启轮播
 	slideshowView.setBitmapList(String[] imageUrls, boolean isAutoPlay)
+##AbImageUtil 图片处理类
+图片的缩放，裁剪，圆边，旋转
 
+	//访问网络获取bitmap类型的图片资源
+	AbImageUtil.getInstance(getApplicationContext()).getBitmapFromUrl("http://image.zcool.com.cn/59/54/m_1303967870670.jpg", new ImageCallBack() {
+					@Override
+					public void onLoadFailed(String arg1) {
+						//图片下载失败
+					}
+					
+					@Override
+					public void onLoadCompleted(Bitmap bm) {
+						//图片下载成功
+					}
+				});
 	
 	
