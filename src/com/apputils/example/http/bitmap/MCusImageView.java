@@ -15,29 +15,30 @@ import android.os.Environment;
 public class MCusImageView {
 
 	public String path = null;
+	public File myCaptureFile = null;
+	public Bitmap bm = null;
 
 	public MCusImageView(Context context, int id) {
 		Drawable drawable = context.getResources().getDrawable(id);
-		Bitmap bm = AbImageUtil.drawableToBitmap(drawable);
-		File myCaptureFile = null;
+		bm = AbImageUtil.drawableToBitmap(drawable);
 		try {
 			if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
 				path = Environment.getExternalStorageDirectory() + "/apputils/img/";
 			} else {
-				path = Environment.getDataDirectory() + "/apputils/img/";
+				path = context.getCacheDir().getPath() + "/apputils/img/";
 			}
 			File dirFile = new File(path);
 			if (!dirFile.exists()) {
 				dirFile.mkdirs();
 			}
-			path = path + id+".jpg";
+			path = path + id + ".jpg";
 			myCaptureFile = new File(path);
 			BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(myCaptureFile));
 			bm.compress(Bitmap.CompressFormat.JPEG, 80, bos);
 			bos.flush();
 			bos.close();
 		} catch (Exception e) {
-			MLog.D(MLog.TAG_IMG, "图片获取本地地址失败："+e.getMessage());
+			MLog.D(MLog.TAG_IMG, "图片获取本地地址失败：" + e.getMessage());
 			path = null;
 		}
 	}
@@ -46,4 +47,11 @@ public class MCusImageView {
 		return path;
 	}
 
+	public File getFile() {
+		return myCaptureFile;
+	}
+
+	public Bitmap getBitmap() {
+		return bm;
+	}
 }
