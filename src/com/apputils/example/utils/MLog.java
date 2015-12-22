@@ -10,6 +10,7 @@ public class MLog {
 	public static String TAG_HTTP = "com.xpputils.http";
 	public static String TAG_ABS = "com.xpputils.abs";
 	public static String TAG_IMG = "com.xpputils.img";
+	public static String TAG_THIRD ="com.xpputils.third";
 
 	public static void V(String tag, String msg) {
 		if (MHttpUtils.INITCONFIG.getLog()) {

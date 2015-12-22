@@ -30,7 +30,11 @@ public class InitConfig {
 	/** @Fields isDebug 设置调试模式true为开发模式，false为生产模式 */
 	public static boolean isDebug = false;
 	public String mUri = "", mUrl = "", mLoading = null, mError = null, mLog = "true", mTemppath = "", mPackage = "",
-			mVersion = "";
+			mVersion = "", qq_appid = "";
+
+	public String getQQappId() {
+		return qq_appid;
+	}
 
 	public InitConfig(Context mContext) {
 		try {
@@ -150,6 +154,8 @@ public class InitConfig {
 							this.mTemppath = xpp.getAttributeValue(i);
 						} else if (xpp.getAttributeName(i).toUpperCase(Locale.ENGLISH).equals("PACKAGE")) {
 							this.mPackage = xpp.getAttributeValue(i);
+						} else if (xpp.getAttributeName(i).toUpperCase(Locale.ENGLISH).equals("QQ_APPID")) {
+							this.qq_appid = xpp.getAttributeValue(i);
 						} else if (xpp.getAttributeName(i).toUpperCase(Locale.ENGLISH).equals("CONNECTIONTIMEOUT")) {
 							try {
 								this.mSoTimeOut = Integer.parseInt(xpp.getAttributeValue(i));

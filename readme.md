@@ -70,6 +70,14 @@
 
 5.根据上面文件中package+classname等于json的实例类的路径，如果不是json数据classname中就以""表示
 
+6.需要的权限
+
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+
 ##MActivity 
 集成访问网络获取数据的动画的dialog
 
@@ -127,5 +135,26 @@
 						//图片下载成功
 					}
 				});
-	
+##MyShareUtils 第三方分享  QQ,微信,新浪微博
+###QQ分享
+清单文件中需要的配置
+
+    <activity
+        android:name="com.tencent.tauth.AuthActivity"
+        android:launchMode="singleTask"
+        android:noHistory="true" >
+        <intent-filter>
+            <action android:name="android.intent.action.VIEW" />
+
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+			<!--tencent+appid-->
+            <data android:scheme="tencent22222222" />
+        </intent-filter>
+    </activity>
+    <activity
+        android:name="com.tencent.connect.common.AssistActivity"
+        android:configChanges="orientation|keyboardHidden|screenSize"
+        android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
 	
