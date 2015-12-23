@@ -33,13 +33,18 @@ public class MCusImageView {
 			}
 			path = path + id + ".jpg";
 			myCaptureFile = new File(path);
-			BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(myCaptureFile));
-			bm.compress(Bitmap.CompressFormat.JPEG, 80, bos);
-			bos.flush();
-			bos.close();
+			if (!myCaptureFile.exists()) {
+				BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(myCaptureFile));
+				bm.compress(Bitmap.CompressFormat.JPEG, 80, bos);
+				bos.flush();
+				bos.close();
+			}
 		} catch (Exception e) {
 			MLog.D(MLog.TAG_IMG, "图片获取本地地址失败：" + e.getMessage());
 			path = null;
+			if (myCaptureFile != null) {
+				myCaptureFile.delete();
+			}
 		}
 	}
 

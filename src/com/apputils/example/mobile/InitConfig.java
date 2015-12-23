@@ -29,8 +29,21 @@ public class InitConfig {
 	public int mSoTimeOut, mConnectionTimeOut;
 	/** @Fields isDebug 设置调试模式true为开发模式，false为生产模式 */
 	public static boolean isDebug = false;
+	//分享
+	public String qq_appid="",sina_appkey="",sina_redirect_url="",sina_scope="";
 	public String mUri = "", mUrl = "", mLoading = null, mError = null, mLog = "true", mTemppath = "", mPackage = "",
-			mVersion = "", qq_appid = "";
+			mVersion = "";
+	public String getSinaScope(){
+		return sina_scope;
+	}
+	
+	public String getSinaredirectUrl(){
+		return sina_redirect_url;
+	}
+	
+	public String getSinappKey(){
+		return sina_appkey;
+	}
 
 	public String getQQappId() {
 		return qq_appid;
@@ -40,9 +53,39 @@ public class InitConfig {
 		try {
 			readUrl(mContext);
 			readError(mContext);
+			readThird(mContext);
 		} catch (Exception e) {
 			throw new IllegalStateException("Init Error:" + e.getMessage());
 		}
+	}
+	private void readThird(Context mContext) throws Exception{
+		InputStream istr = mContext.getAssets().open("third.xml");
+		XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+		factory.setNamespaceAware(true);
+		XmlPullParser xpp = factory.newPullParser();
+		xpp.setInput(istr, "UTF-8");
+		int eventType = xpp.getEventType();
+		while (eventType != XmlPullParser.END_DOCUMENT) {
+			if (eventType == XmlPullParser.START_DOCUMENT) {
+			} else if (eventType == XmlPullParser.END_DOCUMENT) {
+			} else if (eventType == XmlPullParser.START_TAG) {
+				if (xpp.getName().toUpperCase(Locale.ENGLISH).equals("THIRDKEY")) {
+					for (int i = 0; i < xpp.getAttributeCount(); i++) {
+						if (xpp.getAttributeName(i).toUpperCase(Locale.ENGLISH).equals("QQ_APPID")) {
+							this.qq_appid = xpp.getAttributeValue(i);
+						} else if (xpp.getAttributeName(i).toUpperCase(Locale.ENGLISH).equals("SINA_APPKEY")) {
+							this.sina_appkey = xpp.getAttributeValue(i);
+						} else if (xpp.getAttributeName(i).toUpperCase(Locale.ENGLISH).equals("SINA_REDIRECT_URL")) {
+							this.sina_redirect_url = xpp.getAttributeValue(i);
+						} else if (xpp.getAttributeName(i).toUpperCase(Locale.ENGLISH).equals("SINA_SCOPE")) {
+							this.sina_scope = xpp.getAttributeValue(i);
+						}
+					}
+				}
+			}
+			eventType = xpp.next();
+		}
+		istr.close();
 	}
 
 	private void readError(Context mContext) throws Exception {

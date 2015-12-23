@@ -1,5 +1,10 @@
 <resources>
 
     <string name="app_name">AppUtils</string>
+    <string name="weibosdk_demo_cancel_download_weibo">\t取消下载</string>
+    <string name="weibosdk_demo_toast_share_success">分享成功</string>
+    <string name="weibosdk_demo_toast_share_failed">分享失败</string>
+    <string name="weibosdk_demo_toast_share_canceled">取消分享</string>
+    <string name="share_content">share_content</string>
 
 </resources>

@@ -1,26 +1,52 @@
 package com.apputils.example.utils.common;
 
+import android.graphics.Bitmap;
+
 public class ShareMode {
 	/**
-	 * 分享的标题
+	 * sina必需要视频的图片，但实际不显示大小要小于15k
+	 */
+	public Bitmap thumbImage;
+	/**
+	 * 分享的描述，用在sina
+	 */
+	public String des;
+	/**
+	 * 分享的标题,用在sina,qq
 	 */
 	public String title;
 	/**
-	 * 分享的摘要
+	 * 分享的摘要,用在sina,qq
 	 */
 	public String content;
 	/**
-	 * 分享点击跳转的链接
+	 * 分享点击跳转的链接,用在sina,qq
 	 */
 	public String targetUrl;
 	/**
-	 * 分享的图片的网络地址
+	 * 分享的图片的网络地址,用在qq
 	 */
 	public String imgUrl;
 	/**
-	 * 分享的图片的本地地址
+	 * 分享的图片的本地地址,用在qq,如果有本地路径就显示本地路径的图片，反之显示网络路径的图片，两图片至少传一个
 	 */
 	public String localImgUrl;
+	
+	public Bitmap getThumbImage() {
+		return thumbImage;
+	}
+
+	public void setThumbImage(Bitmap thumbImage) {
+		this.thumbImage = thumbImage;
+	}
+	
+	public String getDes() {
+		return des;
+	}
+
+	public void setDes(String des) {
+		this.des = des;
+	}
 
 	public String getTitle() {
 		return title;
@@ -61,11 +87,4 @@ public class ShareMode {
 	public void setLocalImgUrl(String localImgUrl) {
 		this.localImgUrl = localImgUrl;
 	}
-
-	@Override
-	public String toString() {
-		return "ShareMode [title=" + title + ", content=" + content + ", targetUrl=" + targetUrl + ", imgUrl=" + imgUrl
-				+ ", localImgUrl=" + localImgUrl + "]";
-	}
-	
 }

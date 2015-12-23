@@ -70,7 +70,18 @@
 
 5.根据上面文件中package+classname等于json的实例类的路径，如果不是json数据classname中就以""表示
 
-6.需要的权限
+6.自定义错误码assets/errorInfo.xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+	<ErrorInfo version="1">
+	    <error des="原因未知"				type="-1"  title="错误">原因未知</error>
+	    <error des="没有网络"  				type="100" title="警告">网络连接失败，请检查网络</error>
+	    <error des="未登录"   				type="101" title="警告">当前未登录，请登录</error>
+	    <error des="用户名或密码错误"  		type="102" title="警告">用户名或密码错误，请检查</error>
+	    <error des="json解析错误"  			type="103" title="错误">json解析错误，请联系客服</error>
+	</ErrorInfo>
+
+7.需要的权限
 
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -136,6 +147,26 @@
 					}
 				});
 ##MyShareUtils 第三方分享  QQ,微信,新浪微博
+### 第三方账号的配置信息，放在assets/third.xml 规范如下
+	<?xml version="1.0" encoding="UTF-8"?>
+	<!--
+		qq_appid QQ分享的appid
+		sina_appkey 新浪分享的appkey
+		sina_redirect_url 新浪分享的回调
+		sina_scope 新浪的授权
+		 
+	
+	 -->
+	<ThirdKey qq_appid=""
+	    	  sina_appkey=""
+	    	  sina_redirect_url=""
+	    	  sina_scope="email,direct_messages_read,direct_messages_write,
+	    	  friendships_groups_read,friendships_groups_write,statuses_to_me_read,
+	    	  follow_app_official_microblog,invitation_write"
+	    >
+	
+	</ThirdKey>
+
 ###QQ分享
 清单文件中需要的配置
 
@@ -156,5 +187,13 @@
         android:name="com.tencent.connect.common.AssistActivity"
         android:configChanges="orientation|keyboardHidden|screenSize"
         android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+###新浪分享
 
+	<activity
+            android:name="com.sina.weibo.sdk.component.WeiboSdkBrowser"
+            android:configChanges="keyboardHidden|orientation"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" >
+    </activity>
+###微信分享
 	
