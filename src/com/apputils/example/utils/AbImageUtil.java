@@ -76,7 +76,7 @@ public class AbImageUtil {
 
 	}
 
-	public Bitmap revitionImageSize(String path, int size) {
+	public static Bitmap revitionImageSize(String path, int size) {
 		Bitmap bitmap = null;
 		try {
 			// 取得图片
