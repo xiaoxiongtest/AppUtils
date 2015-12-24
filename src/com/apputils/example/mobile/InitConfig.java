@@ -29,24 +29,29 @@ public class InitConfig {
 	public int mSoTimeOut, mConnectionTimeOut;
 	/** @Fields isDebug 设置调试模式true为开发模式，false为生产模式 */
 	public static boolean isDebug = false;
-	//分享
-	public String qq_appid="",sina_appkey="",sina_redirect_url="",sina_scope="";
+	// 分享
+	public String qq_appid = "", sina_appkey = "", sina_redirect_url = "", sina_scope = "", wx_appid = "";
 	public String mUri = "", mUrl = "", mLoading = null, mError = null, mLog = "true", mTemppath = "", mPackage = "",
 			mVersion = "";
-	public String getSinaScope(){
+
+	public String getSinaScope() {
 		return sina_scope;
 	}
-	
-	public String getSinaredirectUrl(){
+
+	public String getSinaredirectUrl() {
 		return sina_redirect_url;
 	}
-	
-	public String getSinappKey(){
+
+	public String getSinappKey() {
 		return sina_appkey;
 	}
 
 	public String getQQappId() {
 		return qq_appid;
+	}
+
+	public String getWXappId() {
+		return wx_appid;
 	}
 
 	public InitConfig(Context mContext) {
@@ -58,7 +63,8 @@ public class InitConfig {
 			throw new IllegalStateException("Init Error:" + e.getMessage());
 		}
 	}
-	private void readThird(Context mContext) throws Exception{
+
+	private void readThird(Context mContext) throws Exception {
 		InputStream istr = mContext.getAssets().open("third.xml");
 		XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
 		factory.setNamespaceAware(true);
@@ -79,6 +85,8 @@ public class InitConfig {
 							this.sina_redirect_url = xpp.getAttributeValue(i);
 						} else if (xpp.getAttributeName(i).toUpperCase(Locale.ENGLISH).equals("SINA_SCOPE")) {
 							this.sina_scope = xpp.getAttributeValue(i);
+						} else if (xpp.getAttributeName(i).toUpperCase(Locale.ENGLISH).equals("WX_APPID")) {
+							this.wx_appid = xpp.getAttributeValue(i);
 						}
 					}
 				}
@@ -96,7 +104,7 @@ public class InitConfig {
 		xpp.setInput(istr, "UTF-8");
 
 		int eventType = xpp.getEventType();
-		String reading = "", version = "", des = "", type = "", title = "", value = "";
+		String reading = "", des = "", type = "", title = "", value = "";
 		while (eventType != XmlPullParser.END_DOCUMENT) {
 			if (eventType == XmlPullParser.START_TAG) {
 				reading = xpp.getName();

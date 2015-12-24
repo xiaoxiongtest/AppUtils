@@ -16,12 +16,22 @@ import com.sina.weibo.sdk.api.share.WeiboShareSDK;
 import com.sina.weibo.sdk.constant.WBConstants;
 import com.sina.weibo.sdk.utils.Utility;
 import com.tencent.connect.share.QQShare;
+import com.tencent.mm.sdk.modelbase.BaseReq;
+import com.tencent.mm.sdk.modelbase.BaseResp;
+import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
+import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
+import com.tencent.mm.sdk.modelmsg.WXWebpageObject;
+import com.tencent.mm.sdk.openapi.IWXAPI;
+import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
+import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -29,12 +39,15 @@ import android.widget.Toast;
  * 集成第三方分享 QQ,微信,新浪微博
  *
  */
-public class MyShareUtils implements IWeiboHandler.Response {
+public class MyShareUtils implements IWeiboHandler.Response, IWXAPIEventHandler {
 	private static MyShareUtils myShareUtils;
 	private Activity mContext;
 	private Tencent mTencent;
 	private IWeiboShareAPI mWeiboShareAPI;
 	private Bundle savedInstanceState;
+	private IWXAPI wxApi;
+	public static int WECHAT_FRIENDS = 0;
+	public static int WECHAT_FRIENDS_CIRCLE = 1;
 
 	public static MyShareUtils getInstance(Activity context, Bundle savedInstanceState) {
 		if (myShareUtils == null) {
@@ -50,7 +63,9 @@ public class MyShareUtils implements IWeiboHandler.Response {
 	}
 
 	public void initConfig() {
+		// QQ
 		mTencent = Tencent.createInstance(MHttpUtils.INITCONFIG.getQQappId(), mContext);
+		// sina
 		mWeiboShareAPI = WeiboShareSDK.createWeiboAPI(mContext, MHttpUtils.INITCONFIG.getSinappKey());
 		// 当 Activity 被重新初始化时（该 Activity 处于后台时，可能会由于内存不足被杀掉了），
 		// 需要调用 {@link IWeiboShareAPI#handleWeiboResponse} 来接收微博客户端返回的数据。
@@ -81,6 +96,11 @@ public class MyShareUtils implements IWeiboHandler.Response {
 		// 失败返回 false，不调用上述回调
 		// if (savedInstanceState != null) {
 		mWeiboShareAPI.handleWeiboResponse(mContext.getIntent(), this);
+		// 微信
+		wxApi = WXAPIFactory.createWXAPI(mContext, MHttpUtils.INITCONFIG.getWXappId());
+		wxApi.registerApp(MHttpUtils.INITCONFIG.getWXappId());
+		wxApi.handleIntent(mContext.getIntent(), this);
+
 	}
 
 	@Override
@@ -144,6 +164,31 @@ public class MyShareUtils implements IWeiboHandler.Response {
 	}
 
 	/**
+	 * 分享到微信
+	 * 
+	 * @param flag
+	 *            <p>
+	 *            {@link #WECHAT_FRIENDS} 微信好友
+	 *            <p>
+	 *            {@link #WECHAT_FRIENDS_CIRCLE} 微信朋友圈
+	 * @param mode
+	 */
+	public void shareToWechat(int flag, ShareMode mode) {
+		WXWebpageObject webpage = new WXWebpageObject();
+		webpage.webpageUrl = mode.targetUrl;
+		WXMediaMessage msg = new WXMediaMessage(webpage);
+		msg.title = mode.title;
+		msg.description = mode.content;
+		// 这里替换一张自己工程里的图片资源
+		msg.setThumbImage(mode.thumbImage);
+		SendMessageToWX.Req req = new SendMessageToWX.Req();
+		req.transaction = String.valueOf(System.currentTimeMillis());
+		req.message = msg;
+		req.scene = flag == 0 ? SendMessageToWX.Req.WXSceneSession : SendMessageToWX.Req.WXSceneTimeline;
+		wxApi.sendReq(req);
+	}
+
+	/**
 	 * 第三方应用发送请求消息到微博，唤起微博分享界面。
 	 * 
 	 * @see {@link #sendMultiMessage} 或者 {@link #sendSingleMessage}
@@ -168,6 +213,30 @@ public class MyShareUtils implements IWeiboHandler.Response {
 		request.multiMessage = weiboMessage;
 		// 3. 发送请求消息到微博，唤起微博分享界面
 		mWeiboShareAPI.sendRequest(request);
+	}
+
+	@Override
+	public void onReq(BaseReq arg0) {
+
+	}
+
+	@Override
+	public void onResp(BaseResp resp) {
+		MLog.D(MLog.TAG_THIRD, "微信分享errorCode:" + resp.errCode + ",errorStr：" + resp.errStr);
+		switch (resp.errCode) {
+		case BaseResp.ErrCode.ERR_OK:
+			// 分享成功
+			Toast.makeText(mContext, "分享成功", Toast.LENGTH_SHORT).show();
+			break;
+		case BaseResp.ErrCode.ERR_USER_CANCEL:
+			// 分享取消
+			Toast.makeText(mContext, "分享取消", Toast.LENGTH_SHORT).show();
+			break;
+		case BaseResp.ErrCode.ERR_AUTH_DENIED:
+			// 分享拒绝
+			Toast.makeText(mContext, "分享拒绝", Toast.LENGTH_SHORT).show();
+			break;
+		}
 	}
 
 }
