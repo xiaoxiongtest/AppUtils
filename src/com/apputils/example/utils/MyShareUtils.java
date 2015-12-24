@@ -204,6 +204,8 @@ public class MyShareUtils implements IWeiboHandler.Response, IWXAPIEventHandler 
 		weiboMessage.mediaObject.identify = Utility.generateGUID();
 		weiboMessage.mediaObject.title = mode.title;
 		weiboMessage.mediaObject.description = mode.des;
+		weiboMessage.imageObject.imagePath =mode.localImgUrl;
+		weiboMessage.imageObject.actionUrl = mode.imgUrl;
 		// 大小要小于15k
 		weiboMessage.mediaObject.setThumbImage(mode.thumbImage);
 		// 2. 初始化从第三方到微博的消息请求
