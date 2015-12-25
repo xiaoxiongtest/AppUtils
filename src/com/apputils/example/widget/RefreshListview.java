@@ -46,11 +46,20 @@ public class RefreshListview extends ListView implements OnScrollListener {
 	private boolean pullMore = true;
 
 	public RefreshListview(Context context, AttributeSet attrs) {
-		super(context, attrs);
+		this(context, attrs, 0);
+
+	}
+
+	public RefreshListview(Context context, AttributeSet attrs, int defStyle) {
+		super(context, attrs, defStyle);
 		initHeader();
 		initFooter();
 		// 滚动做监听
 		setOnScrollListener(this);
+	}
+
+	public RefreshListview(Context context) {
+		this(context, null);
 	}
 
 	private void initFooter() {
