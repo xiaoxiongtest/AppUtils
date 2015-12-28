@@ -227,3 +227,159 @@
 	shareUtils.showPopupWindow(lay);
 
 ##极光推送
+清单文件中需要的权限
+
+	<permission
+        android:name="com.example.my.permission.JPUSH_MESSAGE"
+        android:protectionLevel="signature" />
+    <uses-permission android:name="com.example.my.permission.JPUSH_MESSAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+ 
+需要文件配置
+	
+	<activity
+            android:name="cn.jpush.android.ui.PushActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:exported="false"
+            android:theme="@android:style/Theme.NoTitleBar" >
+            <intent-filter>
+                <action android:name="cn.jpush.android.ui.PushActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="应用包名" />
+            </intent-filter>
+        </activity>
+
+        <!-- Required SDK 核心功能 -->
+        <!-- option since 2.0.5 可配置PushService，DaemonService,PushReceiver,AlarmReceiver的android:process参数 将JPush相关组件设置为一个独立进程 -->
+        <!-- 如：android:process=":remote" -->
+        <service
+            android:name="cn.jpush.android.service.PushService"
+            android:enabled="true"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="cn.jpush.android.intent.REGISTER" />
+                <action android:name="cn.jpush.android.intent.REPORT" />
+                <action android:name="cn.jpush.android.intent.PushService" />
+                <action android:name="cn.jpush.android.intent.PUSH_TIME" />
+            </intent-filter>
+        </service>
+        <!-- Required SDK核心功能 -->
+        <service
+            android:name="cn.jpush.android.service.DownloadService"
+            android:enabled="true"
+            android:exported="false" >
+        </service>
+        <!-- Required SDK 核心功能 since 1.8.0 -->
+        <service
+            android:name="cn.jpush.android.service.DaemonService"
+            android:enabled="true"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="cn.jpush.android.intent.DaemonService" />
+
+                <category android:name="应用包名" />
+            </intent-filter>
+        </service>
+        <!-- Required SDK核心功能 -->
+        <receiver
+            android:name="cn.jpush.android.service.PushReceiver"
+            android:enabled="true"
+            android:exported="false" >
+            <intent-filter android:priority="1000" >
+                <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED_PROXY" /> <!-- Required 显示通知栏 -->
+                <category android:name="应用包名" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.USER_PRESENT" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+            <!-- Optional -->
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_ADDED" />
+                <action android:name="android.intent.action.PACKAGE_REMOVED" />
+
+                <data android:scheme="package" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Required SDK核心功能 -->
+        <receiver android:name="cn.jpush.android.service.AlarmReceiver" />
+
+        <!-- User defined. 用户自定义的广播接收器 -->
+        <receiver
+            android:name="当前应用中对jpush消息进行的监听"
+            android:enabled="true" >
+            <intent-filter>
+                <action android:name="cn.jpush.android.intent.REGISTRATION" /> <!-- Required 用户注册SDK的intent -->
+                <action android:name="cn.jpush.android.intent.UNREGISTRATION" />
+                <action android:name="cn.jpush.android.intent.MESSAGE_RECEIVED" /> <!-- Required 用户接收SDK消息的intent -->
+                <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED" /> <!-- Required 用户接收SDK通知栏信息的intent -->
+                <action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED" /> <!-- Required 用户打开自定义通知栏的intent -->
+                <action android:name="cn.jpush.android.intent.ACTION_RICHPUSH_CALLBACK" /> <!-- Optional 用户接受Rich Push Javascript 回调函数的intent -->
+                <action android:name="cn.jpush.android.intent.CONNECTION" /> <!-- 接收网络变化 连接/断开 since 1.6.3 -->
+                <category android:name="应用包名" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Required . Enable it you can get statistics data with channel -->
+        <meta-data
+            android:name="JPUSH_CHANNEL"
+            android:value="developer-default" />
+        <meta-data
+            android:name="JPUSH_APPKEY"
+            android:value="appkey" /> <!-- </>值来自开发者平台取得的AppKey -->
+
+JPush的初始化 Application
+	
+	//jpush
+	JPushInterface.setDebugMode(true);
+    JPushInterface.init(this);
+创建一个类集成BroadcastReceiver
+
+	@Override
+	public void onReceive(Context context, Intent intent) {
+		Bundle bundle = intent.getExtras();
+		MLog.D(MLog.TAG_JPUSH, "onReceive - " + intent.getAction());
+
+		if (JPushInterface.ACTION_REGISTRATION_ID.equals(intent.getAction())) {
+			System.out.println("id:" + bundle.getString(JPushInterface.EXTRA_REGISTRATION_ID));
+		} else if (JPushInterface.ACTION_MESSAGE_RECEIVED.equals(intent.getAction())) {
+			System.out.println("收到了自定义消息。消息内容是：" + bundle.getString(JPushInterface.EXTRA_MESSAGE));
+			System.out.println("附加参数：" + bundle.getString(JPushInterface.EXTRA_EXTRA));
+			System.out.println("消息的id" + bundle.getString(JPushInterface.EXTRA_MSG_ID));
+			// 自定义消息不会展示在通知栏，完全要开发者写代码去处理
+		} else if (JPushInterface.ACTION_NOTIFICATION_RECEIVED.equals(intent.getAction())) {
+			System.out.println("收到了通知");
+			System.out.println("html path:" + bundle.getString(JPushInterface.EXTRA_RICHPUSH_HTML_PATH));
+			System.out.println("html res:" + bundle.getString(JPushInterface.EXTRA_RICHPUSH_HTML_RES));
+			// 在这里可以做些统计，或者做些其他工作
+		} else if (JPushInterface.ACTION_NOTIFICATION_OPENED.equals(intent.getAction())) {
+			System.out.println("用户点击打开了通知");
+			// 在这里可以自己写代码去定义用户点击后的行为
+			System.out.println("附加参数：" + bundle.getString(JPushInterface.EXTRA_EXTRA));
+			System.out.println("通知的标题：" + bundle.getString(JPushInterface.EXTRA_NOTIFICATION_TITLE));
+			System.out.println("通知的内容：" + bundle.getString(JPushInterface.EXTRA_ALERT));
+			System.out.println("消息的id:" + bundle.getString(JPushInterface.EXTRA_MSG_ID));
+			Intent i = new Intent(context, ViewpagerTest.class); // 自定义打开的界面
+			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			context.startActivity(i);
+		} else {
+			MLog.D(MLog.TAG_JPUSH, "Unhandled intent - " + intent.getAction());
+		}
+	}
