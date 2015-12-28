@@ -146,6 +146,61 @@
 						//图片下载成功
 					}
 				});
+##类似于QQ5.0侧滑效果	DragLayout，MyRelativeLayout
+需要的jar包
+ nineoldandroids-2.4.0.jar
+	
+布局文件
+
+	<?xml version="1.0" encoding="utf-8"?>
+	<com.apputils.example.widget.DragLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/dl"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="左侧背景" >
+
+	    <RelativeLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent" >
+		<!--左侧的布局内容-->
+	
+	    </RelativeLayout>
+
+	    <com.apputils.example.widget.MyRelativeLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:background="右侧背景" >
+	
+	        <!--右侧的布局内容-->
+	    </com.apputils.example.widget.MyRelativeLayout>
+
+	</com.apputils.example.widget.DragLayout>
+
+逻辑处理
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		...
+		DragLayout dl = (DragLayout) findViewById(R.id.dl);
+		dl.setDragListener(new DragListener() {
+			@Override
+			public void onOpen() {
+			//开启时
+			}
+
+			@Override
+			public void onClose() {
+			//关闭时
+			}
+
+			@Override
+			public void onDrag(float percent) {
+			//滑动时
+			}
+		});
+	}
+
+
 ##MyShareUtils 第三方分享  QQ,微信,新浪微博
 
 	需要的jar包
