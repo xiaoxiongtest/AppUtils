@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:orientation="vertical" >
+    <LinearLayout
+        android:id="@+id/pop_share_lay"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+    	android:background="@drawable/bg_share"
+    	android:layout_margin="10dp"
+    	android:padding="20dp"
+	    android:orientation="vertical" >
+	    <TextView 
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textSize="16sp"
+	        android:textColor="#666666"
+	        android:text="分享到"/>
+	    
+	    <LinearLayout 
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:gravity="center_horizontal"
+	        android:layout_marginTop="20dp"
+	        android:orientation="horizontal">
+	        <ImageView 
+	            android:id="@+id/pop_share_weixin"
+	            android:layout_weight="1"
+	            android:layout_width="50dp"
+	            android:layout_height="50dp"
+	            android:src="@drawable/ic_wx_friends"/>
+	        <ImageView 
+	            android:id="@+id/pop_share_crecle"
+	            android:layout_weight="1"
+	            android:layout_width="50dp"
+	            android:layout_height="50dp"
+	            android:src="@drawable/ic_wx_friends_circle"/>
+	        <ImageView 
+	            android:id="@+id/pop_share_sina"
+	            android:layout_weight="1"
+	            android:layout_width="50dp"
+	            android:layout_height="50dp"
+	            android:src="@drawable/ic_sina"/>
+	        <ImageView 
+	            android:id="@+id/pop_share_QQ"
+	            android:layout_weight="1"
+	            android:layout_width="50dp"
+	            android:layout_height="50dp"
+	            android:src="@drawable/ic_qq"/>
+	    </LinearLayout>
+	
+	    <Button 
+	        android:id="@+id/pop_share_cancle"
+	        android:layout_width="150dp"
+	        android:layout_height="35dp"
+	        android:layout_marginTop="20dp"
+	        android:layout_gravity="center_horizontal"
+	        android:text="取消"
+	        android:textColor="#000000"
+	        android:background="@drawable/bg_share_btn"/>
+    </LinearLayout>
+</RelativeLayout>

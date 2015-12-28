@@ -147,24 +147,35 @@
 					}
 				});
 ##MyShareUtils 第三方分享  QQ,微信,新浪微博
+
+	需要的jar包
+	libammsdk.jar  //微信分享
+	mta-sdk-1.6.2.jar //QQ分享
+	open_sdk_r5509.jar //QQ分享
+	weibosdkcore.jar  //新浪微博
 ### 第三方账号的配置信息，放在assets/third.xml 规范如下
+
 	<?xml version="1.0" encoding="UTF-8"?>
 	<!--
 		qq_appid QQ分享的appid
 		sina_appkey 新浪分享的appkey
 		sina_redirect_url 新浪分享的回调
 		sina_scope 新浪的授权
-		 
-	
-	 -->
+		wx_appid 微信分享的appid
+		
+		qq_enable="true" QQ分享是否可用
+		sina_enable="true" sina分享是否可用
+		wx_friendcricle_enable="true" 微信朋友圈是否可用
+		wx_friend_enable="true" 微信朋友是否可用
+ 	-->
 	<ThirdKey qq_appid=""
 	    	  sina_appkey=""
-	    	  sina_redirect_url=""
-	    	  sina_scope="email,direct_messages_read,direct_messages_write,
-	    	  friendships_groups_read,friendships_groups_write,statuses_to_me_read,
-	    	  follow_app_official_microblog,invitation_write"
-	    >
-	
+	    	  wx_appid=""
+	    	  qq_enable="" 
+			  sina_enable="" 
+			  wx_friendcricle_enable=""
+		      wx_friend_enable=""
+	    	  >
 	</ThirdKey>
 
 ###QQ分享
@@ -196,4 +207,23 @@
             android:windowSoftInputMode="adjustResize" >
     </activity>
 ###微信分享
-	
+
+###分享
+
+	shareUtils =  MyShareUtils.getInstance(TestActivity.this,savedInstanceState);
+	ShareMode mode = new ShareMode();
+	//设置一些要分享的内容
+	mode.title = "标题";
+	mode.content = "内容";
+	mode.targetUrl = "跳转的地址";
+	mode.localImgUrl = new MCusImageView(getApplicationContext(), R.drawable.appmain_subject_1).getPath();
+	mode.imgUrl = "http://img3.cache.netease.com/photo/0005/2013-03-07/8PBKS8G400BV0005.jpg";
+	mode.des="这是描述信息";
+	mode.thumbImage=new MCusImageView(getApplicationContext(), R.drawable.ic_launcher).getBitmap();
+	shareUtils = MyShareUtils.getInstance(ViewpagerTest.this,savedInstanceState);
+	shareUtils.setShareMode(mode);
+	//显示分享的popupwindow
+	LinearLayout lay = (LinearLayout) findViewById(R.id.lay);
+	shareUtils.showPopupWindow(lay);
+
+##极光推送

@@ -2,8 +2,8 @@ package com.apputils.example.utils;
 
 import com.apputils.example.R;
 import com.apputils.example.http.MHttpUtils;
-import com.apputils.example.http.bitmap.MCusImageView;
 import com.apputils.example.utils.common.ShareMode;
+import com.apputils.example.utils.common.ThirdMode;
 import com.sina.weibo.sdk.api.TextObject;
 import com.sina.weibo.sdk.api.WebpageObject;
 import com.sina.weibo.sdk.api.WeiboMultiMessage;
@@ -30,16 +30,28 @@ import com.tencent.tauth.UiError;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.Toast;
 
 /**
  * 集成第三方分享 QQ,微信,新浪微博
  *
  */
-public class MyShareUtils implements IWeiboHandler.Response, IWXAPIEventHandler {
+public class MyShareUtils implements IWeiboHandler.Response, IWXAPIEventHandler, OnClickListener {
+	private PopupWindow popupWindow;
+	private ImageView btn_QQ, btn_weixin, btn_sina, btn_crecle;
+	private Button btn_cancle;
 	private static MyShareUtils myShareUtils;
 	private Activity mContext;
 	private Tencent mTencent;
@@ -48,6 +60,8 @@ public class MyShareUtils implements IWeiboHandler.Response, IWXAPIEventHandler 
 	private IWXAPI wxApi;
 	public static int WECHAT_FRIENDS = 0;
 	public static int WECHAT_FRIENDS_CIRCLE = 1;
+	private ThirdMode thirdMode;
+	private ShareMode mode;
 
 	public static MyShareUtils getInstance(Activity context, Bundle savedInstanceState) {
 		if (myShareUtils == null) {
@@ -59,14 +73,52 @@ public class MyShareUtils implements IWeiboHandler.Response, IWXAPIEventHandler 
 	public MyShareUtils(Activity context, Bundle savedInstanceState) {
 		this.savedInstanceState = savedInstanceState;
 		this.mContext = context;
+		this.thirdMode = MHttpUtils.INITCONFIG.getThirdMode();
 		initConfig();
+	}
+
+	public void setShareMode(ShareMode mode) {
+		this.mode = mode;
+	}
+
+	public void showPopupWindow(ViewGroup lay) {
+		// 一个自定义的布局，作为显示的内容
+		View contentView = LayoutInflater.from(mContext).inflate(R.layout.share_platform, null);
+		popupWindow = new PopupWindow(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+		popupWindow.setContentView(contentView);
+		popupWindow.setFocusable(true);
+		popupWindow.setOutsideTouchable(false);
+		
+		btn_QQ = (ImageView) contentView.findViewById(R.id.pop_share_QQ);
+		btn_weixin = (ImageView) contentView.findViewById(R.id.pop_share_weixin);
+		btn_crecle = (ImageView) contentView.findViewById(R.id.pop_share_crecle);
+		btn_sina = (ImageView) contentView.findViewById(R.id.pop_share_sina);
+		btn_cancle = (Button) contentView.findViewById(R.id.pop_share_cancle);
+
+		btn_QQ.setVisibility(thirdMode.qq_enable ? View.VISIBLE : View.GONE);
+		btn_sina.setVisibility(thirdMode.sina_enable ? View.VISIBLE : View.GONE);
+		btn_weixin.setVisibility(thirdMode.wx_friends ? View.VISIBLE : View.GONE);
+		btn_crecle.setVisibility(thirdMode.wx_friends_circle ? View.VISIBLE : View.GONE);
+
+		btn_QQ.setOnClickListener(this);
+		btn_weixin.setOnClickListener(this);
+		btn_crecle.setOnClickListener(this);
+		btn_sina.setOnClickListener(this);
+		btn_cancle.setOnClickListener(this);
+		// 如果不设置PopupWindow的背景，无论是点击外部区域还是Back键都无法dismiss弹框
+		// popupWindow.setBackgroundDrawable(
+		// getResources().getDrawable(R.drawable.pop_window_bg));
+		popupWindow.setBackgroundDrawable(new BitmapDrawable());
+		// 设置好参数之后再show
+		popupWindow.showAtLocation(lay, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+
 	}
 
 	public void initConfig() {
 		// QQ
-		mTencent = Tencent.createInstance(MHttpUtils.INITCONFIG.getQQappId(), mContext);
+		mTencent = Tencent.createInstance(thirdMode.qq_appid, mContext);
 		// sina
-		mWeiboShareAPI = WeiboShareSDK.createWeiboAPI(mContext, MHttpUtils.INITCONFIG.getSinappKey());
+		mWeiboShareAPI = WeiboShareSDK.createWeiboAPI(mContext, thirdMode.sina_appkey);
 		// 当 Activity 被重新初始化时（该 Activity 处于后台时，可能会由于内存不足被杀掉了），
 		// 需要调用 {@link IWeiboShareAPI#handleWeiboResponse} 来接收微博客户端返回的数据。
 		// 执行成功，返回 true，并调用 {@link IWeiboHandler.Response#onResponse}；
@@ -97,8 +149,8 @@ public class MyShareUtils implements IWeiboHandler.Response, IWXAPIEventHandler 
 		// if (savedInstanceState != null) {
 		mWeiboShareAPI.handleWeiboResponse(mContext.getIntent(), this);
 		// 微信
-		wxApi = WXAPIFactory.createWXAPI(mContext, MHttpUtils.INITCONFIG.getWXappId());
-		wxApi.registerApp(MHttpUtils.INITCONFIG.getWXappId());
+		wxApi = WXAPIFactory.createWXAPI(mContext, thirdMode.wx_appid);
+		wxApi.registerApp(thirdMode.wx_appid);
 		wxApi.handleIntent(mContext.getIntent(), this);
 
 	}
@@ -204,8 +256,6 @@ public class MyShareUtils implements IWeiboHandler.Response, IWXAPIEventHandler 
 		weiboMessage.mediaObject.identify = Utility.generateGUID();
 		weiboMessage.mediaObject.title = mode.title;
 		weiboMessage.mediaObject.description = mode.des;
-		weiboMessage.imageObject.imagePath =mode.localImgUrl;
-		weiboMessage.imageObject.actionUrl = mode.imgUrl;
 		// 大小要小于15k
 		weiboMessage.mediaObject.setThumbImage(mode.thumbImage);
 		// 2. 初始化从第三方到微博的消息请求
@@ -241,4 +291,20 @@ public class MyShareUtils implements IWeiboHandler.Response, IWXAPIEventHandler 
 		}
 	}
 
+	@Override
+	public void onClick(View v) {
+		int id = v.getId();
+		if (mode == null)
+			return;
+		if (id == R.id.pop_share_QQ) {
+			shareToQQ(mode);
+		} else if (id == R.id.pop_share_weixin) {
+			shareToWechat(WECHAT_FRIENDS, mode);
+		} else if (id == R.id.pop_share_crecle) {
+			shareToWechat(WECHAT_FRIENDS_CIRCLE, mode);
+		} else if (id == R.id.pop_share_sina) {
+			shareToSina(mode);
+		}
+		popupWindow.dismiss();
+	}
 }

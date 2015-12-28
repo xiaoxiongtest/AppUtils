@@ -18,6 +18,7 @@ import com.apputils.example.dialog.MsgDialog;
 import com.apputils.example.utils.MLog;
 import com.apputils.example.utils.common.InitError;
 import com.apputils.example.utils.common.InitUrl;
+import com.apputils.example.utils.common.ThirdMode;
 import com.apputils.example.xmlencrypt.XMLDES;
 import com.lidroid.xutils.http.client.HttpRequest.HttpMethod;
 
@@ -29,29 +30,12 @@ public class InitConfig {
 	public int mSoTimeOut, mConnectionTimeOut;
 	/** @Fields isDebug 设置调试模式true为开发模式，false为生产模式 */
 	public static boolean isDebug = false;
-	// 分享
-	public String qq_appid = "", sina_appkey = "", sina_redirect_url = "", sina_scope = "", wx_appid = "";
 	public String mUri = "", mUrl = "", mLoading = null, mError = null, mLog = "true", mTemppath = "", mPackage = "",
 			mVersion = "";
+	public ThirdMode thirdMode;
 
-	public String getSinaScope() {
-		return sina_scope;
-	}
-
-	public String getSinaredirectUrl() {
-		return sina_redirect_url;
-	}
-
-	public String getSinappKey() {
-		return sina_appkey;
-	}
-
-	public String getQQappId() {
-		return qq_appid;
-	}
-
-	public String getWXappId() {
-		return wx_appid;
+	public ThirdMode getThirdMode() {
+		return thirdMode;
 	}
 
 	public InitConfig(Context mContext) {
@@ -71,6 +55,7 @@ public class InitConfig {
 		XmlPullParser xpp = factory.newPullParser();
 		xpp.setInput(istr, "UTF-8");
 		int eventType = xpp.getEventType();
+		thirdMode = new ThirdMode();
 		while (eventType != XmlPullParser.END_DOCUMENT) {
 			if (eventType == XmlPullParser.START_DOCUMENT) {
 			} else if (eventType == XmlPullParser.END_DOCUMENT) {
@@ -78,15 +63,20 @@ public class InitConfig {
 				if (xpp.getName().toUpperCase(Locale.ENGLISH).equals("THIRDKEY")) {
 					for (int i = 0; i < xpp.getAttributeCount(); i++) {
 						if (xpp.getAttributeName(i).toUpperCase(Locale.ENGLISH).equals("QQ_APPID")) {
-							this.qq_appid = xpp.getAttributeValue(i);
+							thirdMode.qq_appid = xpp.getAttributeValue(i);
 						} else if (xpp.getAttributeName(i).toUpperCase(Locale.ENGLISH).equals("SINA_APPKEY")) {
-							this.sina_appkey = xpp.getAttributeValue(i);
-						} else if (xpp.getAttributeName(i).toUpperCase(Locale.ENGLISH).equals("SINA_REDIRECT_URL")) {
-							this.sina_redirect_url = xpp.getAttributeValue(i);
-						} else if (xpp.getAttributeName(i).toUpperCase(Locale.ENGLISH).equals("SINA_SCOPE")) {
-							this.sina_scope = xpp.getAttributeValue(i);
+							thirdMode.sina_appkey = xpp.getAttributeValue(i);
 						} else if (xpp.getAttributeName(i).toUpperCase(Locale.ENGLISH).equals("WX_APPID")) {
-							this.wx_appid = xpp.getAttributeValue(i);
+							thirdMode.wx_appid = xpp.getAttributeValue(i);
+						} else if (xpp.getAttributeName(i).toUpperCase(Locale.ENGLISH).equals("QQ_ENABLE")) {
+							thirdMode.qq_enable = Boolean.parseBoolean(xpp.getAttributeValue(i));
+						} else if (xpp.getAttributeName(i).toUpperCase(Locale.ENGLISH).equals("SINA_ENABLE")) {
+							thirdMode.sina_enable = Boolean.parseBoolean(xpp.getAttributeValue(i));
+						} else if (xpp.getAttributeName(i).toUpperCase(Locale.ENGLISH)
+								.equals("WX_FRIENDCRICLE_ENABLE")) {
+							thirdMode.wx_friends_circle = Boolean.parseBoolean(xpp.getAttributeValue(i));
+						} else if (xpp.getAttributeName(i).toUpperCase(Locale.ENGLISH).equals("WX_FRIEND_ENABLE")) {
+							thirdMode.wx_friends = Boolean.parseBoolean(xpp.getAttributeValue(i));
 						}
 					}
 				}
@@ -205,8 +195,6 @@ public class InitConfig {
 							this.mTemppath = xpp.getAttributeValue(i);
 						} else if (xpp.getAttributeName(i).toUpperCase(Locale.ENGLISH).equals("PACKAGE")) {
 							this.mPackage = xpp.getAttributeValue(i);
-						} else if (xpp.getAttributeName(i).toUpperCase(Locale.ENGLISH).equals("QQ_APPID")) {
-							this.qq_appid = xpp.getAttributeValue(i);
 						} else if (xpp.getAttributeName(i).toUpperCase(Locale.ENGLISH).equals("CONNECTIONTIMEOUT")) {
 							try {
 								this.mSoTimeOut = Integer.parseInt(xpp.getAttributeValue(i));
