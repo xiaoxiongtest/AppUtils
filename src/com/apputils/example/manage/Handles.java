@@ -1,12 +1,22 @@
 package com.apputils.example.manage;
 
 import java.util.ArrayList;
-
-
 import android.os.Handler;
+import android.os.Message;
 
 public class Handles {
 	private ArrayList<MHandler> HANDLES = new ArrayList<MHandler>();
+	
+	public void sendMsg(String id,Message msg){
+		for(MHandler handle : this.get(id)){
+			handle.sendMessage(msg);
+		}
+	}
+	public void sendMsg(String id,int type){
+		for(MHandler handle : this.get(id)){
+			handle.sendEmptyMessage(type);
+		}
+	}
 
 	/**
 	 * 向HANDLES中添加一个MHandler对象

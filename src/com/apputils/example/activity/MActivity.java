@@ -39,17 +39,32 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.RemoteViews;
 
 public class MActivity extends Activity {
 	protected MHandler handler;
 	protected Loading loadingDialog;
+	/**
+	 * 是否显示加载进度的dialog&错误信息提示的dialog
+	 */
 	protected boolean state;
+	/**
+	 * 设置是否有标题 默认没有
+	 */
+	protected boolean hasTitle = false;
+	/**
+	 * 设置是否全屏，默认不全屏
+	 */
+	protected boolean isFullScreen = false;
+	// 返回数据的类型
 	public static final int SINGLE_OBJECT = 0;
 	public static final int ARRAY_OBJECT = 1;
 	public static final int SINGLE_STRING = 2;
-	public static final int NOTIFICATION_ID = 3;
+	// 提示消息的id
+	private static final int NOTIFICATION_ID = 3;
 	public List<String> downing_list = new ArrayList<String>();
 	/**
 	 * 下载文件是否在通知提示栏显示
@@ -78,11 +93,18 @@ public class MActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		MLog.I("class:" + this.getClass().toString());
+		if (!hasTitle) {
+			requestWindowFeature(Window.FEATURE_NO_TITLE);
+		}
+		if (isFullScreen) {
+			getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+					WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		}
+		MLog.I(""+this.getClass().toString());
 		AbDisplayUtil.init(this);
 		MHttpUtils.init(this);
 		handler = new MHandler();
-		String className = this.getClass().getName();
+		String className = this.getClass().getSimpleName();
 		handler.setId(className);
 		handler.setHandleMsgLisnener(new HandleMsgLisnener() {
 			@Override
@@ -106,6 +128,7 @@ public class MActivity extends Activity {
 					showError(error.title, error.value);
 					break;
 				default:
+					disHandlerMsg(msg);
 					break;
 				}
 
@@ -455,8 +478,11 @@ public class MActivity extends Activity {
 	 * @param type
 	 *            json数据的类型；0表示数据为单个对象，1表示对象集合
 	 */
-	public void disResposeMsg(String id, Object obj, int type) {
+	protected void disResposeMsg(String id, Object obj, int type) {
 
+	}
+	protected void disHandlerMsg(Message msg){
+		
 	}
 
 }

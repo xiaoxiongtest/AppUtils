@@ -7,17 +7,17 @@ public class MHandler extends Handler {
 	public String id;
 	public HandleMsgLisnener msglisnener;
 	/** @Fields MSG_LOAD : 关闭页面 */
-	public static final int MSG_CLOSE = 0;
+	public static final int MSG_CLOSE = 100;
 
 	/** @Fields MSG_LOAD : 开启一个加载框 */
-	public static final int MSG_SHOW_DIALOG = 98;
+	public static final int MSG_SHOW_DIALOG = 101;
 
 	/** @Fields MSG_LOAD : 关闭一个加载框 */
-	public static final int MSG_CLOSE_DIALOG = 99;
+	public static final int MSG_CLOSE_DIALOG = 102;
 
-	public static final int MSG_SHOW_ERROR = 96;
+	public static final int MSG_SHOW_ERROR = 103;
 	
-	public static final int MSG_CLOSE_ERROR = 97;
+	public static final int MSG_CLOSE_ERROR = 104;
 
 	public void setId(String id) {
 		this.id = id;

@@ -1,4 +1,4 @@
-package com.apputils.example.adapter;
+package com.apputils.example.base;
 
 import java.util.List;
 

@@ -127,6 +127,66 @@
 	//监听事件处理结束，动画恢复需要调用的方法
 	listview.onFinish();
 
+##BaseAdapter的两个集成
+###MyBaseAdapter
+用法如下：
+
+	public class ListAdapter extends MyBaseAdapter<T>{
+		public ListAdapter(Context mContext, List<T> als) {
+			super(mContext, als);
+		//初始化的操作,可以调用的参数如下
+		//protected List<T> als;
+	    //protected Context mContext;
+		}
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			// 设置view和逻辑处理
+			return null;
+		}
+	}
+###MyHolderBaseAdapter&BaseHolder 
+用法如下：
+
+	public class MyAdapter extends MyHolderBaseAdapter<T> {
+		public MyAdapter(Context mContext, List<T> list) {
+			super(mContext, list);
+		//初始化的操作,可以调用的参数如下
+		//protected List<T> als;
+	    //protected Context mContext;
+		}
+
+		@Override
+		public BaseHolder<T> getHolder() {
+			return new MyHolder(mContext);
+		}
+	}
+	
+	====================================================
+	public class MyHolder extends BaseHolder<T> {
+		private View view;
+
+		public MyHolder(Context mContext) {
+			super(mContext);
+		}
+
+		@Override
+		public void refreshView() {
+			Content data = getData();
+			//控件实例化，并设置数据
+			//TextView tv = (TextView) view.findViewById(R.id.myTextview);
+			//tv.setText(data.str);
+		}
+
+		@Override
+		public View initView() {
+			//布局实例化
+			//view = View.inflate(mContext, R.layout.item_text, null);
+			return view;
+		}
+	}
+
+
+
 ##SlideShowView 轮播图
 	// imageUrls 所有图片资源的url地址
 	// isAutoPlay 是否开启轮播
@@ -282,6 +342,12 @@
 	shareUtils.showPopupWindow(lay);
 
 ##极光推送
+需要的jar包
+	
+	armeabi/libjpush205.so
+	armeabi-v7a/libjpush205.so
+	libs/jpush-android-2.0.5.jar
+
 清单文件中需要的权限
 
 	<permission
@@ -438,3 +504,73 @@ JPush的初始化 Application
 			MLog.D(MLog.TAG_JPUSH, "Unhandled intent - " + intent.getAction());
 		}
 	}
+##百度地图
+需要的jar包
+
+	armeabi/libBaiduMapSDK_base_v3_6_1.so
+	armeabi/libBaiduMapSDK_map_v3_6_1.so
+	armeabi-v7a/libBaiduMapSDK_base_v3_6_1.so
+	armeabi-v7a/libBaiduMapSDK_map_v3_6_1.so
+	libs/baidumapapi_base_v3_6_1.jar
+	libs/baidumapapi_map_v3_6_1.jar
+
+清单文件中的配置
+
+	<meta-data  
+        android:name="com.baidu.lbsapi.API_KEY"  
+        android:value="开发者 key" /> 
+需要的权限
+
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+	<uses-permission android:name="android.permission.INTERNET"/>
+	<uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
+	<uses-permission android:name="android.permission.WAKE_LOCK"/>
+	<uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+	<uses-permission android:name="android.permission.GET_TASKS" />
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+	<uses-permission android:name="android.permission.WRITE_SETTINGS" />
+
+如果有需要展示的控件
+
+	<com.baidu.mapapi.map.MapView  
+	    android:id="@+id/bmapView"  
+	    android:layout_width="fill_parent"  
+	    android:layout_height="fill_parent"  
+	    android:clickable="true" />
+sdk的初始化
+
+	//在使用SDK各组件之前初始化context信息，传入ApplicationContext  
+    //注意该方法要再setContentView方法之前实现  
+    SDKInitializer.initialize(getApplicationContext()); 
+
+创建地图activity
+
+	public class TestActivity extends Activity {  
+    public MapView mMapView;  
+    @Override  
+    protected void onCreate(Bundle savedInstanceState) {  
+        super.onCreate(savedInstanceState);   
+        setContentView(R.layout.activity_test);  
+        //获取地图控件引用  
+        mMapView = (MapView) findViewById(R.id.bmapView);  
+    }  
+    @Override  
+    protected void onDestroy() {  
+        super.onDestroy();  
+        mMapView.onDestroy();  
+    }  
+    @Override  
+    protected void onResume() {  
+        super.onResume();  
+        mMapView.onResume();  
+        }  
+    @Override  
+    protected void onPause() {  
+        super.onPause();  
+        mMapView.onPause();  
+        }  
+    }
+###定位
+
+其他功能参考百度地图开发文档
