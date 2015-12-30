@@ -35,12 +35,10 @@ public abstract class MyHolderBaseAdapter<T> extends BaseAdapter {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		if (convertView == null) {
-			// ���ݲ�ͬ�Ľ�����ʹ��listview��item��ĿЧ������holder,xml-->view���̴�������
 			holder = getHolder();
 		} else {
 			holder = (BaseHolder) convertView.getTag();
 		}
-		// ��holder��������,��ǰ��ĿҪȥչʾ������,���������Ӽ����л�ȡ
 		holder.setData(list.get(position));
 
 		return holder.getRootView();
