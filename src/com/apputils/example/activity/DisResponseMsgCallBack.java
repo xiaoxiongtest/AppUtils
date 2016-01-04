@@ -10,5 +10,5 @@ public interface DisResponseMsgCallBack {
 	 * @param type
 	 *            json数据的类型；0表示数据为单个对象，1表示对象集合
 	 */
-	public abstract void disResposeMsg(String id, Object obj, int type);
+	public abstract void disResposeMMsg(String id, Object obj, int type);
 }

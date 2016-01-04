@@ -2,10 +2,12 @@ package com.apputils.example.utils;
 
 import com.apputils.example.R;
 
+import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.os.Handler;
+import android.view.Gravity;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 /**
@@ -22,24 +24,25 @@ public class MyToast extends Dialog {
 	private TextView mTextView;
 	private Handler handler;
 	private static MyToast toast;
-	private Context context;
+	private Activity activity;
 
-	public MyToast(Context context, boolean cancelable, OnCancelListener cancelListener) {
-		super(context, cancelable, cancelListener);
-		init(context);
+	public MyToast(Activity activity, boolean cancelable, OnCancelListener cancelListener) {
+		super(activity, cancelable, cancelListener);
+		init(activity);
 	}
 
-	public MyToast(Context context, int theme) {
-		super(context, theme);
-		init(context);
+	public MyToast(Activity activity, int theme) {
+		super(activity, theme);
+		init(activity);
 	}
 
-	public MyToast(Context context) {
-		this(context, 0);
+	public MyToast(Activity activity) {
+		// 背景透明不变灰
+		this(activity, R.style.DialogStyle);
 	}
 
-	private void init(Context context) {
-		this.context = context;
+	private void init(Activity activity) {
+		this.activity = activity;
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 		this.setContentView(R.layout.dialog_mytoast);
@@ -60,8 +63,8 @@ public class MyToast extends Dialog {
 				public void dispatchMessage(android.os.Message msg) {
 					switch (msg.what) {
 					case DIALOG_DISMISS:
-						if (MyToast.getToast(context).isShowing()) {
-							MyToast.getToast(context).dismiss();
+						if (MyToast.getToast(activity).isShowing()) {
+							MyToast.getToast(activity).dismiss();
 						}
 						break;
 					}
@@ -71,20 +74,31 @@ public class MyToast extends Dialog {
 		return handler;
 	}
 
-	public static MyToast getToast(Context context) {
+	public static MyToast getToast(Activity activity) {
 		if (toast == null) {
-			toast = new MyToast(context);
+			toast = new MyToast(activity);
+			Window dialogWindow = toast.getWindow();
+			WindowManager.LayoutParams lp = dialogWindow.getAttributes();
+			dialogWindow.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL);
+			lp.y = (int) AbDisplayUtil.dip2px(activity, 50); // 新位置Y坐标
+			dialogWindow.setAttributes(lp);
 		}
 		return toast;
 	}
 
-	public static Dialog makeText(Context context, String s, int duration) {
-		MyToast mToast = getToast(context);
+	public static Dialog makeText(Activity activity, String s, int duration) {
+		MyToast mToast = getToast(activity);
 		mToast.setText(s);
 		mToast.getHandler().removeMessages(DIALOG_DISMISS);
 		mToast.show();
-		mToast.getHandler().sendEmptyMessageDelayed(DIALOG_DISMISS, duration == LENGTH_SHORT?2000:3500);
+		mToast.getHandler().sendEmptyMessageDelayed(DIALOG_DISMISS, duration == LENGTH_SHORT ? 2000 : 3500);
 		return mToast;
+	}
+
+	@Override
+	public void dismiss() {
+		super.dismiss();
+		toast = null;
 	}
 
 }

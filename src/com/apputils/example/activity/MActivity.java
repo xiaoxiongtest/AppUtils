@@ -118,7 +118,7 @@ public class MActivity extends Activity {
 			disResponseMsgCallBack = new DisResponseMsgCallBack(){
 
 				@Override
-				public void disResposeMsg(String id, Object obj, int type) {
+				public void disResposeMMsg(String id, Object obj, int type) {
 					disResposeMsg(id, obj, type);
 				}
 			};

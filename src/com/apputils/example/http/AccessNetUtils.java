@@ -139,17 +139,17 @@ public class AccessNetUtils {
 									Gson gson = new Gson();
 									Object obj = MHttpUtils.INITCONFIG.getJsonObject(id);
 									try {
-										callback.disResposeMsg(id, gson.fromJson(json, obj.getClass()), MActivity.SINGLE_OBJECT);
+										callback.disResposeMMsg(id, gson.fromJson(json, obj.getClass()), MActivity.SINGLE_OBJECT);
 									} catch (Exception e) {
 										try {
-											callback.disResposeMsg(id, getJsonList(json, obj.getClass()), MActivity.ARRAY_OBJECT);
+											callback.disResposeMMsg(id, getJsonList(json, obj.getClass()), MActivity.ARRAY_OBJECT);
 										} catch (Exception error) {
 											activity.showError("错误", "json数据解析错误");
 										}
 									}
 								} else {
 									MLog.D(MLog.TAG_HTTP, "返回的数据不是json");
-									callback.disResposeMsg(id, json, MActivity.SINGLE_STRING);
+									callback.disResposeMMsg(id, json, MActivity.SINGLE_STRING);
 								}
 
 							} else {
