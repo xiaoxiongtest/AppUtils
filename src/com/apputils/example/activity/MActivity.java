@@ -9,6 +9,7 @@ import com.apputils.example.dialog.DialogError;
 import com.apputils.example.dialog.DialogLoading;
 import com.apputils.example.dialog.Loading;
 import com.apputils.example.dialog.MsgDialog;
+import com.apputils.example.http.AccessNetUtils;
 import com.apputils.example.http.MHttpUtils;
 import com.apputils.example.manage.MHandler;
 import com.apputils.example.manage.MHandler.HandleMsgLisnener;
@@ -90,6 +91,8 @@ public class MActivity extends Activity {
 
 	private int LoadingSize = 0;
 	protected HttpUtils httpUtils;
+	//private AccessNetUtils accessNetUtils;
+	private DisResponseMsgCallBack disResponseMsgCallBack;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -100,45 +103,72 @@ public class MActivity extends Activity {
 			getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 					WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		}
-		MLog.I(""+this.getClass().toString());
+		MLog.I("" + this.getClass().toString());
 		AbDisplayUtil.init(this);
 		MHttpUtils.init(this);
-		handler = new MHandler();
-		String className = this.getClass().getSimpleName();
-		handler.setId(className);
-		handler.setHandleMsgLisnener(new HandleMsgLisnener() {
-			@Override
-			public void onMessage(Message msg) {
-
-				switch (msg.what) {
-				case MHandler.MSG_CLOSE:
-					// 判断是否是嵌入的activity
-					if (getParent() == null) {
-						finish();
-					}
-					break;
-				case MHandler.MSG_SHOW_DIALOG:
-					showLoad();
-					break;
-				case MHandler.MSG_CLOSE_DIALOG:
-					closeLoad();
-					break;
-				case MHandler.MSG_SHOW_ERROR:
-					InitError error = (InitError) msg.obj;
-					showError(error.title, error.value);
-					break;
-				default:
-					disHandlerMsg(msg);
-					break;
-				}
-
-			}
-		});
-		MHttpUtils.HANDLES.add(handler);
+		handler = getHandler();
 		initdialog();
-		// 初始化网络
-		httpUtils = MHttpUtils.getInstance();
+		getHttpUtils();
+		//accessNetUtils = accessNetUtils.getInstance(this);
+		getDisResponseMsgCallBack();
 		super.onCreate(savedInstanceState);
+	}
+	public DisResponseMsgCallBack getDisResponseMsgCallBack(){
+		if(disResponseMsgCallBack == null){
+			disResponseMsgCallBack = new DisResponseMsgCallBack(){
+
+				@Override
+				public void disResposeMsg(String id, Object obj, int type) {
+					disResposeMsg(id, obj, type);
+				}
+			};
+		}
+		return disResponseMsgCallBack;
+	}
+	public HttpUtils getHttpUtils(){
+		if(httpUtils == null){
+			// 初始化网络
+			httpUtils = MHttpUtils.getInstance();
+		}
+		return httpUtils;
+	}
+
+	public MHandler getHandler() {
+		if (handler == null) {
+			handler = new MHandler();
+			String className = this.getClass().getSimpleName();
+			handler.setId(className);
+			handler.setHandleMsgLisnener(new HandleMsgLisnener() {
+				@Override
+				public void onMessage(Message msg) {
+
+					switch (msg.what) {
+					case MHandler.MSG_CLOSE:
+						// 判断是否是嵌入的activity
+						if (getParent() == null) {
+							finish();
+						}
+						break;
+					case MHandler.MSG_SHOW_DIALOG:
+						showLoad();
+						break;
+					case MHandler.MSG_CLOSE_DIALOG:
+						closeLoad();
+						break;
+					case MHandler.MSG_SHOW_ERROR:
+						InitError error = (InitError) msg.obj;
+						showError(error.title, error.value);
+						break;
+					default:
+						disHandlerMsg(msg);
+						break;
+					}
+
+				}
+			});
+			MHttpUtils.HANDLES.add(handler);
+		}
+		return handler;
 	}
 
 	public void downFileToLocal(String url, final String target) {
@@ -336,138 +366,21 @@ public class MActivity extends Activity {
 		closeAll();
 		super.onDestroy();
 	}
-
+	
 	public void accessNet(String id) {
-		accessNet(id, null);
+		AccessNetUtils.getInstance(this).accessNet(id, null, getDisResponseMsgCallBack());
 	}
 
 	public void accessNet(String id, String[][] params) {
-		accessNet(id, params, null);
+		AccessNetUtils.getInstance(this).accessNet(id, params, null, getDisResponseMsgCallBack());
+	}
+	public void accessNet(String id, String[][] params,RequestParams request) {
+		AccessNetUtils.getInstance(this).accessNet(id, params, null, getDisResponseMsgCallBack());
 	}
 
-	/**
-	 * 请求网络
-	 * 
-	 * @param id
-	 *            initUrl.xml文件中需要调用的接口的名称
-	 * @param params
-	 *            url中需要携带的参数
-	 * @param request
-	 *            请求中可能要添加的请求头参数
-	 */
-	public void accessNet(final String id, String[][] params, RequestParams request) {
-		InitUrl initUrl = MHttpUtils.INITCONFIG.getUrl(id);
-		if (initUrl != null) {
-			String url = initUrl.url;
-			// 拼接参数
-			if (params != null) {
-				boolean tag = true;
-				for (String[] param : params) {
-					if (!TextUtils.isEmpty(param[0]) && !TextUtils.isEmpty(param[1])) {
-						if (tag) {
-							url = url + "?";
-							tag = false;
-						} else {
-							url = url + "&";
-						}
-						url = url + param[0] + "=" + param[1];
-					}
-				}
-			}
-			// 拼接自默认参数
-			String autoParam = MHttpUtils.getAutoParamStr();
+	protected void disHandlerMsg(Message msg) {
 
-			if (!TextUtils.isEmpty(autoParam)) {
-				if (initUrl.url.length() == url.length()) {
-					url = url + "?";
-				} else {
-					url = url + "&";
-				}
-				if (null != autoParam) {
-					url += autoParam;
-				}
-			}
-			// 检查是否有网络
-			if (NetWorkHelper.getNetWorkType(getApplicationContext()) == NetWorkHelper.NETWORKTYPE_INVALID) {
-				MHttpUtils.INITCONFIG.getMsgDialog(MActivity.this);
-				Message msg = new Message();
-				InitError notNetInfo = MHttpUtils.getNotNetInfo();
-				if (notNetInfo == null || notNetInfo.title == null || notNetInfo.value == null) {
-					InitError error = new InitError();
-					error.title = "警告";
-					error.value = "网络连接失败，请检查网络";
-					msg.obj = error;
-				} else {
-					msg.obj = notNetInfo;
-				}
-				msg.what = MHandler.MSG_SHOW_ERROR;
-				handler.sendMessage(msg);
-				return;
-			}
-
-			MLog.D(MLog.TAG_HTTP, id + " " + (initUrl.type == 0 ? "get" : "post") + " " + url);
-
-			httpUtils.send(initUrl.type == 0 ? HttpMethod.GET : HttpMethod.POST, url, request,
-					new RequestCallBack<String>() {
-						@Override
-						public void onStart() {
-							handler.sendEmptyMessage(MHandler.MSG_SHOW_DIALOG);
-							super.onStart();
-						}
-
-						@Override
-						public void onFailure(HttpException arg0, String arg1) {
-							handler.sendEmptyMessage(MHandler.MSG_CLOSE_DIALOG);
-							Message msg = new Message();
-							InitError error = new InitError();
-							error.title = "错误";
-							error.value = arg1;
-							msg.obj = error;
-							msg.what = MHandler.MSG_SHOW_ERROR;
-							handler.sendMessage(msg);
-						}
-
-						@Override
-						public void onSuccess(ResponseInfo<String> info) {
-							handler.sendEmptyMessage(MHandler.MSG_CLOSE_DIALOG);
-							String json = info.result;
-							MLog.D(MLog.TAG_HTTP, json);
-							if (json != null) {
-								if (MHttpUtils.INITCONFIG.getJsonObject(id) != null) {
-									// json解析
-									Gson gson = new Gson();
-									Object obj = MHttpUtils.INITCONFIG.getJsonObject(id);
-									try {
-										disResposeMsg(id, gson.fromJson(json, obj.getClass()), SINGLE_OBJECT);
-									} catch (Exception e) {
-										try {
-											disResposeMsg(id, getJsonList(json, obj.getClass()), ARRAY_OBJECT);
-										} catch (Exception error) {
-											showError("错误", "json数据解析错误");
-										}
-									}
-								} else {
-									MLog.D(MLog.TAG_HTTP, "返回的数据不是json");
-									disResposeMsg(id, json, SINGLE_STRING);
-								}
-
-							} else {
-								MLog.D(MLog.TAG_HTTP, "未返回数据");
-							}
-						}
-					});
-		}
 	}
-
-	private <T> ArrayList<T> getJsonList(String json, Class<T> clazz) throws Exception {
-		ArrayList<T> lst = new ArrayList<T>();
-		JsonArray array = new JsonParser().parse(json).getAsJsonArray();
-		for (final JsonElement elem : array) {
-			lst.add(new Gson().fromJson(elem, clazz));
-		}
-		return lst;
-	}
-
 	/**
 	 * 网络数据请求成功后的回调
 	 * 
@@ -478,10 +391,7 @@ public class MActivity extends Activity {
 	 * @param type
 	 *            json数据的类型；0表示数据为单个对象，1表示对象集合
 	 */
-	protected void disResposeMsg(String id, Object obj, int type) {
-
-	}
-	protected void disHandlerMsg(Message msg){
+	public void disResposeMsg(String id, Object obj, int type){
 		
 	}
 
