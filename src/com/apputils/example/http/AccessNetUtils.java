@@ -133,16 +133,18 @@ public class AccessNetUtils {
 							activity.getHandler().sendEmptyMessage(MHandler.MSG_CLOSE_DIALOG);
 							String json = info.result;
 							MLog.D(MLog.TAG_HTTP, json);
-							if (json != null) {
+							if (json != null && json.length() > 0) {
 								if (MHttpUtils.INITCONFIG.getJsonObject(id) != null) {
 									// json解析
 									Gson gson = new Gson();
 									Object obj = MHttpUtils.INITCONFIG.getJsonObject(id);
 									try {
-										callback.disResposeMMsg(id, gson.fromJson(json, obj.getClass()), MActivity.SINGLE_OBJECT);
+										callback.disResposeMMsg(id, gson.fromJson(json, obj.getClass()),
+												MActivity.SINGLE_OBJECT);
 									} catch (Exception e) {
 										try {
-											callback.disResposeMMsg(id, getJsonList(json, obj.getClass()), MActivity.ARRAY_OBJECT);
+											callback.disResposeMMsg(id, getJsonList(json, obj.getClass()),
+													MActivity.ARRAY_OBJECT);
 										} catch (Exception error) {
 											activity.showError("错误", "json数据解析错误");
 										}
