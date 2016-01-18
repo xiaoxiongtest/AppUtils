@@ -15,7 +15,6 @@
  */
 package com.apputils.example.dtc;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class FDCT.
  */

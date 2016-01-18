@@ -64,6 +64,7 @@ public class MActivity extends Activity {
 	public static final int SINGLE_OBJECT = 0;
 	public static final int ARRAY_OBJECT = 1;
 	public static final int SINGLE_STRING = 2;
+	public static final int SUCCESS_BUT_NODATA =3;
 	// 提示消息的id
 	private static final int NOTIFICATION_ID = 3;
 	public List<String> downing_list = new ArrayList<String>();
@@ -375,7 +376,7 @@ public class MActivity extends Activity {
 		AccessNetUtils.getInstance(this).accessNet(id, params, null, getDisResponseMsgCallBack());
 	}
 	public void accessNet(String id, String[][] params,RequestParams request) {
-		AccessNetUtils.getInstance(this).accessNet(id, params, null, getDisResponseMsgCallBack());
+		AccessNetUtils.getInstance(this).accessNet(id, params, request, getDisResponseMsgCallBack());
 	}
 
 	protected void disHandlerMsg(Message msg) {

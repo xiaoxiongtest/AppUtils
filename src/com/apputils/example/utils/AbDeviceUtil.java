@@ -23,7 +23,6 @@ import android.util.Log;
 
 /**
 * @ClassName:	AbDeviceUtil 
-* @Description:	TODO
 * @Author		yu
 * @Version		1.0
 * @Time		[2014年12月17日 上午10:51:38] 
@@ -43,7 +42,6 @@ public class AbDeviceUtil {
     /** 
      * @author yu
      * @Title: getSDKVersion 
-     * @Description: TODO
      * @param @return 
      * @return int 
      * @throws 

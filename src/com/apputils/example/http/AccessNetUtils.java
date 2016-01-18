@@ -156,6 +156,7 @@ public class AccessNetUtils {
 
 							} else {
 								MLog.D(MLog.TAG_HTTP, "未返回数据");
+								callback.disResposeMMsg(id, null, MActivity.SUCCESS_BUT_NODATA);
 							}
 						}
 					});

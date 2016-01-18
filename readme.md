@@ -259,6 +259,53 @@
 			}
 		});
 	}
+## 二维码生成和扫描
+
+### QRUtils
+	//生成有logo的二维码
+	createQRImageWithLogo();
+	//生成普通的二维码
+	createQRImage();
+### 二维码扫描
+
+	权限
+	<uses-permission android:name="android.permission.CAMERA"></uses-permission>
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
+	<uses-feature android:name="android.hardware.camera" />
+	<uses-feature android:name="android.hardware.camera.autofocus" />
+	<uses-permission android:name="android.permission.VIBRATE"/>
+  	<uses-permission android:name="android.permission.FLASHLIGHT"/>
+
+	<activity
+	    android:name="com.apputils.example.activity.qr.CaptureActivity"
+	    android:configChanges="orientation|keyboardHidden"
+	    android:screenOrientation="landscape"
+	    android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+	    android:windowSoftInputMode="stateAlwaysHidden" >
+	</activity>
+
+	跳转的时候需要携带的数据
+	Intent intent = new Intent();
+	intent.setClass(MainActivity.this, CaptureActivity.class);
+	intent.putExtra("getPhoto", false); //是否显示相册获取二维码的按钮，默认不显示
+	intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	startActivityForResult(intent, SCANNIN_GREQUEST_CODE);
+	前一个activity中的回调
+	@Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+		case SCANNIN_GREQUEST_CODE:
+			if(resultCode == RESULT_OK){
+				Bundle bundle = data.getExtras();
+				//显示扫描到的内容
+				String result = bundle.getString("result")
+				//显示拍的二维码的图片
+				Bitmap bitmap = (Bitmap) data.getParcelableExtra("bitmap");
+			}
+			break;
+		}
+    }
 
 
 ##MyShareUtils 第三方分享  QQ,微信,新浪微博
