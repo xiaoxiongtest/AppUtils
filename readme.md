@@ -1,18 +1,18 @@
 # AppUtils
 该项目是基于gson-2.2.4.jar和xUtils-2.6.14.jar的一些基本的封装
 ## 目录
- * [集成的步骤](#index)
- * [MActivity](#MActivity)
- * [RefreshListview](#RefreshListview)
- * [关于listview的两个BaseAdapter集成](#basepager)
- * [ViewPager的集成](#viewpager)
- * [SlideShowView 轮播图](#SlideShowView)
- * [AbImageUtil 图片处理类](#AbImageUtil)
- * [类似于QQ5.0侧滑效果	DragLayout，MyRelativeLayout](#qq)
- * [二维码生成和扫描](#qr)
- * [MyShareUtils 第三方分享  QQ,微信,新浪微博](#share)
- * [极光推送](#jg)
- * [百度地图](#bd)
+ * [集成的步骤](https://github.com/xiaoxiongtest/AppUtils#index)
+ * [MActivity](https://github.com/xiaoxiongtest/AppUtils#MActivity)
+ * [RefreshListview](https://github.com/xiaoxiongtest/AppUtils#RefreshListview)
+ * [关于listview的两个BaseAdapter集成](https://github.com/xiaoxiongtest/AppUtils#basepager)
+ * [ViewPager的集成](https://github.com/xiaoxiongtest/AppUtils#viewpager)
+ * [SlideShowView 轮播图](https://github.com/xiaoxiongtest/AppUtils#SlideShowView)
+ * [AbImageUtil 图片处理类](https://github.com/xiaoxiongtest/AppUtils#AbImageUtil)
+ * [类似于QQ5.0侧滑效果	DragLayout，MyRelativeLayout](https://github.com/xiaoxiongtest/AppUtils#qq)
+ * [二维码生成和扫描](https://github.com/xiaoxiongtest/AppUtils#qr)
+ * [MyShareUtils 第三方分享  QQ,微信,新浪微博](https://github.com/xiaoxiongtest/AppUtils#share)
+ * [极光推送](https://github.com/xiaoxiongtest/AppUtils#jg)
+ * [百度地图](https://github.com/xiaoxiongtest/AppUtils#bd)
 
 ## 集成的步骤
 <span id="index"></span>
