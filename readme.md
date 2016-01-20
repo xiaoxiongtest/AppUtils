@@ -333,18 +333,13 @@
   	<uses-permission android:name="android.permission.FLASHLIGHT"/>
 
 	<activity
-	    android:name="com.apputils.example.activity.qr.CaptureActivity"
-	    android:configChanges="orientation|keyboardHidden"
-	    android:screenOrientation="landscape"
-	    android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
-	    android:windowSoftInputMode="stateAlwaysHidden" >
-	</activity>
+            android:name="com.apputils.example.activity.CaptureActivity"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:screenOrientation="portrait" />
 
 	跳转的时候需要携带的数据
-	Intent intent = new Intent();
-	intent.setClass(MainActivity.this, CaptureActivity.class);
-	intent.putExtra("getPhoto", false); //是否显示相册获取二维码的按钮，默认不显示
-	intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	Intent intent =new Intent(MainActivity.this,CaptureActivity.class);
 	startActivityForResult(intent, SCANNIN_GREQUEST_CODE);
 	前一个activity中的回调
 	@Override
@@ -355,9 +350,8 @@
 			if(resultCode == RESULT_OK){
 				Bundle bundle = data.getExtras();
 				//显示扫描到的内容
-				String result = bundle.getString("result")
-				//显示拍的二维码的图片
-				Bitmap bitmap = (Bitmap) data.getParcelableExtra("bitmap");
+				String result = bundle.getString("result");
+				Log.d("result:"+result);
 			}
 			break;
 		}

@@ -52,14 +52,7 @@ public class MActivity extends Activity {
 	 * 是否显示加载进度的dialog&错误信息提示的dialog
 	 */
 	protected boolean state;
-	/**
-	 * 设置是否有标题 默认没有
-	 */
-	protected boolean hasTitle = false;
-	/**
-	 * 设置是否全屏，默认不全屏
-	 */
-	protected boolean isFullScreen = false;
+
 	// 返回数据的类型
 	public static final int SINGLE_OBJECT = 0;
 	public static final int ARRAY_OBJECT = 1;
@@ -97,13 +90,6 @@ public class MActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		if (!hasTitle) {
-			requestWindowFeature(Window.FEATURE_NO_TITLE);
-		}
-		if (isFullScreen) {
-			getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-					WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		}
 		MLog.I("" + this.getClass().toString());
 		AbDisplayUtil.init(this);
 		MHttpUtils.init(this);
