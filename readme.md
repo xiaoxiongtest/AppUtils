@@ -1,6 +1,21 @@
 # AppUtils
 该项目是基于gson-2.2.4.jar和xUtils-2.6.14.jar的一些基本的封装
+## 目录
+ * [集成的步骤](#index)
+ * [MActivity](#MActivity)
+ * [RefreshListview](#RefreshListview)
+ * [关于listview的两个BaseAdapter集成](#basepager)
+ * [ViewPager的集成](#viewpager)
+ * [SlideShowView 轮播图](#SlideShowView)
+ * [AbImageUtil 图片处理类](#AbImageUtil)
+ * [类似于QQ5.0侧滑效果	DragLayout，MyRelativeLayout](#qq)
+ * [二维码生成和扫描](#qr)
+ * [MyShareUtils 第三方分享  QQ,微信,新浪微博](#share)
+ * [极光推送](#jg)
+ * [百度地图](#bd)
+
 ## 集成的步骤
+<span id="index"></span>
 1. 将github上的源码下载下来导入项目中，并让所开发的项目进行依赖（该步骤就不介绍了，百度上有很多）
 2. 创建一个类继承Application，并在oncreate方法中加入以下代码
 
@@ -90,6 +105,7 @@
 
 
 ##MActivity 
+<span id="MActivity"></span>
 集成访问网络获取数据的动画的dialog
 
 下载文件显示进度的progressbar和notification
@@ -109,6 +125,7 @@
 	}
 
 ##RefreshListview 下拉刷新，上拉加载listview
+<span id="RefreshListview"></span>
 	
 	listview.setOnRefreshListener(new OnRefreshListener() {
 		@Override
@@ -127,7 +144,8 @@
 	//监听事件处理结束，动画恢复需要调用的方法
 	listview.onFinish();
 
-##BaseAdapter的两个集成
+##关于listview的两个BaseAdapter集成
+<span id="basepager"></span>
 ###MyBaseAdapter
 用法如下：
 
@@ -184,14 +202,59 @@
 			return view;
 		}
 	}
+##ViewPager的集成
+<span id="viewpager"></span>
+
+	viewpager = (ViewPager) findViewById(R.id.viewpager);
+		List<BasePager> list = new ArrayList<BasePager>();
+		list.add(new PagerOne(MainActivity.this));
+		list.add(new PagerTwo(MainActivity.this));
+		viewpager.setAdapter(new BaseViewPagerAdapter(list));
+		//禁止viewpager滑动,如果不需要请删除
+		viewpager.setOnTouchListener(new View.OnTouchListener(){
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				return true;
+			}
+	});
+	=========================================================
+	public class PagerOne extends BasePager {
+	private TextView tv;
+
+	//父类中有几个变量可以直接使用的：
+	//this.context = context;
+	//this.accessNetUtils= AccessNetUtils.getInstance(context);
+	//view = initView();
+
+	
+		public PagerOne(MActivity context) {
+			super(context);
+		}
+
+		@Override
+		public View initView() {
+			//ui的初始化
+			View view = View.inflate(context,R.layout.pager_one , null);
+			tv = (TextView) view.findViewById(R.id.one);
+			return view;
+		}
+
+		@Override
+		public void initData() {
+			//逻辑的处理
+			tv.setText("one");
+		}
+	}
 
 
 
 ##SlideShowView 轮播图
+<span id="SlideShowView"></span>
 	// imageUrls 所有图片资源的url地址
 	// isAutoPlay 是否开启轮播
 	slideshowView.setBitmapList(String[] imageUrls, boolean isAutoPlay)
 ##AbImageUtil 图片处理类
+<span id="AbImageUtil"></span>
 图片的缩放，裁剪，圆边，旋转
 
 	//访问网络获取bitmap类型的图片资源
@@ -207,6 +270,7 @@
 					}
 				});
 ##类似于QQ5.0侧滑效果	DragLayout，MyRelativeLayout
+<span id="qq"></span>
 需要的jar包
  nineoldandroids-2.4.0.jar
 	
@@ -260,6 +324,7 @@
 		});
 	}
 ## 二维码生成和扫描
+<span id="qr"></span>
 
 ### QRUtils
 	//生成有logo的二维码
@@ -309,6 +374,7 @@
 
 
 ##MyShareUtils 第三方分享  QQ,微信,新浪微博
+<span id="share"></span>
 
 	需要的jar包
 	libammsdk.jar  //微信分享
@@ -389,6 +455,8 @@
 	shareUtils.showPopupWindow(lay);
 
 ##极光推送
+<span id="jg"></span>
+
 需要的jar包
 	
 	armeabi/libjpush205.so
@@ -552,6 +620,7 @@ JPush的初始化 Application
 		}
 	}
 ##百度地图
+<span id="bd"></span>
 需要的jar包
 
 	armeabi/libBaiduMapSDK_base_v3_6_1.so
