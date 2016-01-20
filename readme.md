@@ -1,21 +1,20 @@
 # AppUtils
 该项目是基于gson-2.2.4.jar和xUtils-2.6.14.jar的一些基本的封装
 ## 目录
- * [集成的步骤](https://github.com/xiaoxiongtest/AppUtils#index)
- * [MActivity](https://github.com/xiaoxiongtest/AppUtils#MActivity)
- * [RefreshListview](https://github.com/xiaoxiongtest/AppUtils#RefreshListview)
- * [关于listview的两个BaseAdapter集成](https://github.com/xiaoxiongtest/AppUtils#basepager)
- * [ViewPager的集成](https://github.com/xiaoxiongtest/AppUtils#viewpager)
- * [SlideShowView 轮播图](https://github.com/xiaoxiongtest/AppUtils#SlideShowView)
- * [AbImageUtil 图片处理类](https://github.com/xiaoxiongtest/AppUtils#AbImageUtil)
- * [类似于QQ5.0侧滑效果	DragLayout，MyRelativeLayout](https://github.com/xiaoxiongtest/AppUtils#qq)
- * [二维码生成和扫描](https://github.com/xiaoxiongtest/AppUtils#qr)
- * [MyShareUtils 第三方分享  QQ,微信,新浪微博](https://github.com/xiaoxiongtest/AppUtils#share)
- * [极光推送](https://github.com/xiaoxiongtest/AppUtils#jg)
- * [百度地图](https://github.com/xiaoxiongtest/AppUtils#bd)
+ * [集成的步骤](https://github.com/xiaoxiongtest/AppUtils#集成的步骤)
+ * [MActivity](https://github.com/xiaoxiongtest/AppUtils#mactivity)
+ * [RefreshListview](https://github.com/xiaoxiongtest/AppUtils#refreshlistview-下拉刷新上拉加载listview)
+ * [关于listview的两个BaseAdapter集成](https://github.com/xiaoxiongtest/AppUtils#关于listview的两个BaseAdapter集成)
+ * [ViewPager的集成](https://github.com/xiaoxiongtest/AppUtils#ViewPager的集成)
+ * [SlideShowView 轮播图](https://github.com/xiaoxiongtest/AppUtils#slideshowview-轮播图)
+ * [AbImageUtil 图片处理类](https://github.com/xiaoxiongtest/AppUtils##abimageutil-图片处理类)
+ * [类似于QQ5.0侧滑效果	DragLayout，MyRelativeLayout](https://github.com/xiaoxiongtest/AppUtils#类似于qq50侧滑效果----draglayoutmyrelativelayout)
+ * [二维码生成和扫描](https://github.com/xiaoxiongtest/AppUtils#二维码生成和扫描)
+ * [MyShareUtils 第三方分享  QQ,微信,新浪微博](https://github.com/xiaoxiongtest/AppUtils#myshareutils-第三方分享--qq微信新浪微博)
+ * [极光推送](https://github.com/xiaoxiongtest/AppUtils#极光推送)
+ * [百度地图](https://github.com/xiaoxiongtest/AppUtils#百度地图)
 
 ## 集成的步骤
-<span id="index"></span>
 1. 将github上的源码下载下来导入项目中，并让所开发的项目进行依赖（该步骤就不介绍了，百度上有很多）
 2. 创建一个类继承Application，并在oncreate方法中加入以下代码
 
@@ -105,7 +104,6 @@
 
 
 ##MActivity 
-<span id="MActivity"></span>
 集成访问网络获取数据的动画的dialog
 
 下载文件显示进度的progressbar和notification
@@ -125,7 +123,6 @@
 	}
 
 ##RefreshListview 下拉刷新，上拉加载listview
-<span id="RefreshListview"></span>
 	
 	listview.setOnRefreshListener(new OnRefreshListener() {
 		@Override
@@ -145,7 +142,6 @@
 	listview.onFinish();
 
 ##关于listview的两个BaseAdapter集成
-<span id="basepager"></span>
 ###MyBaseAdapter
 用法如下：
 
@@ -203,7 +199,6 @@
 		}
 	}
 ##ViewPager的集成
-<span id="viewpager"></span>
 
 	viewpager = (ViewPager) findViewById(R.id.viewpager);
 		List<BasePager> list = new ArrayList<BasePager>();
@@ -249,12 +244,10 @@
 
 
 ##SlideShowView 轮播图
-<span id="SlideShowView"></span>
 	// imageUrls 所有图片资源的url地址
 	// isAutoPlay 是否开启轮播
 	slideshowView.setBitmapList(String[] imageUrls, boolean isAutoPlay)
 ##AbImageUtil 图片处理类
-<span id="AbImageUtil"></span>
 图片的缩放，裁剪，圆边，旋转
 
 	//访问网络获取bitmap类型的图片资源
@@ -270,7 +263,6 @@
 					}
 				});
 ##类似于QQ5.0侧滑效果	DragLayout，MyRelativeLayout
-<span id="qq"></span>
 需要的jar包
  nineoldandroids-2.4.0.jar
 	
@@ -324,7 +316,6 @@
 		});
 	}
 ## 二维码生成和扫描
-<span id="qr"></span>
 
 ### QRUtils
 	//生成有logo的二维码
@@ -374,7 +365,6 @@
 
 
 ##MyShareUtils 第三方分享  QQ,微信,新浪微博
-<span id="share"></span>
 
 	需要的jar包
 	libammsdk.jar  //微信分享
@@ -455,7 +445,6 @@
 	shareUtils.showPopupWindow(lay);
 
 ##极光推送
-<span id="jg"></span>
 
 需要的jar包
 	
@@ -620,7 +609,6 @@ JPush的初始化 Application
 		}
 	}
 ##百度地图
-<span id="bd"></span>
 需要的jar包
 
 	armeabi/libBaiduMapSDK_base_v3_6_1.so
