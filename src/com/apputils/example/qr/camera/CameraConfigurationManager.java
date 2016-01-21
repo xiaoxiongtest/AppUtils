@@ -181,7 +181,7 @@ final class CameraConfigurationManager {
   }
 
   private void setFlash(Camera.Parameters parameters) {
-    // FIXME: This is a hack to turn the flash off on the Samsung Galaxy.
+    // This is a hack to turn the flash off on the Samsung Galaxy.
     // And this is a hack-hack to work around a different value on the Behold II
     // Restrict Behold II check to Cupcake, per Samsung's advice
     //if (Build.MODEL.contains("Behold II") &&

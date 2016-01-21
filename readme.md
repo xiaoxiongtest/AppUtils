@@ -628,47 +628,38 @@ JPush的初始化 Application
 	<uses-permission android:name="android.permission.GET_TASKS" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 	<uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.READ_LOGS" />
 
-如果有需要展示的控件
+跳转的页面
 
-	<com.baidu.mapapi.map.MapView  
-	    android:id="@+id/bmapView"  
-	    android:layout_width="fill_parent"  
-	    android:layout_height="fill_parent"  
-	    android:clickable="true" />
-sdk的初始化
+	<activity
+            android:name="com.apputils.example.activity.BaiduMapDemoActivity"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.Holo.Light.NoActionBar"
+            android:screenOrientation="portrait" >
+     </activity>
+页面的跳转和数据的获取
 
-	//在使用SDK各组件之前初始化context信息，传入ApplicationContext  
-    //注意该方法要再setContentView方法之前实现  
-    SDKInitializer.initialize(getApplicationContext()); 
-
-创建地图activity
-
-	public class TestActivity extends Activity {  
-    public MapView mMapView;  
-    @Override  
-    protected void onCreate(Bundle savedInstanceState) {  
-        super.onCreate(savedInstanceState);   
-        setContentView(R.layout.activity_test);  
-        //获取地图控件引用  
-        mMapView = (MapView) findViewById(R.id.bmapView);  
-    }  
-    @Override  
-    protected void onDestroy() {  
-        super.onDestroy();  
-        mMapView.onDestroy();  
-    }  
-    @Override  
-    protected void onResume() {  
-        super.onResume();  
-        mMapView.onResume();  
-        }  
-    @Override  
-    protected void onPause() {  
-        super.onPause();  
-        mMapView.onPause();  
-        }  
+	Intent intent =new Intent(MainActivity.this,BaiduMapDemoActivity.class);
+	//限制返回的地点距离当前地点的范围,单位米,不设置默认是1000
+	intent.putExtra("distance_limited", 2000);
+	startActivityForResult(intent, BAIDU_MAP);
+    ===========================================================
+	@Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+		case BAIDU_MAP:
+			if(resultCode == RESULT_OK){
+				Bundle bundle = data.getExtras();
+				//显示扫描到的内容
+				LocationItemInfo info = (LocationItemInfo) bundle.get("iteminfo");
+				//成功获取数据
+			}else if(resultCode == RESULT_CANCELED){
+				//获取数据失败"
+			}
+			break;
+		}
     }
-###定位
 
-其他功能参考百度地图开发文档
+
