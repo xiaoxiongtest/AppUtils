@@ -638,6 +638,14 @@ JPush的初始化 Application
             android:theme="@android:style/Theme.Holo.Light.NoActionBar"
             android:screenOrientation="portrait" >
      </activity>
+
+		<meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="BAIDU_KEY" />
+        <service  
+            android:name="com.baidu.location.f"  
+            android:enabled="true"  
+            android:process=":remote" />  
 页面的跳转和数据的获取
 
 	Intent intent =new Intent(MainActivity.this,BaiduMapDemoActivity.class);
