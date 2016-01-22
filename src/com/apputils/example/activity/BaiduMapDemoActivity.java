@@ -21,7 +21,7 @@ import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.MarkerOptions;
-import com.baidu.mapapi.map.MarkerOptions.MarkerAnimateType;
+import com.baidu.mapapi.map.UiSettings;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.core.PoiInfo;
 import com.baidu.mapapi.search.poi.OnGetPoiSearchResultListener;
@@ -37,7 +37,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -50,7 +49,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class BaiduMapDemoActivity extends Activity implements OnClickListener,OnItemClickListener {
+public class BaiduMapDemoActivity extends Activity
+		implements OnClickListener, OnItemClickListener, OnGetPoiSearchResultListener {
 	private LocationClient mLocationClient;
 	private MyLocationReceiver receiver;
 	private BaiduMap mBaiduMap;
@@ -63,27 +63,25 @@ public class BaiduMapDemoActivity extends Activity implements OnClickListener,On
 	private LatLng position;
 	private MyAdapter adpter;
 	private int distance_limited;
+	private double last_latitude = -1;
+	private double last_lontitude = -1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		distance_limited=getIntent().getIntExtra("distance_limited", 1000);
+		distance_limited = getIntent().getIntExtra("distance_limited", 1000);
+		boolean allgesturesenabled = getIntent().getBooleanExtra("allgesturesenabled", true);
 		// 定位
 		mLocationClient = new LocationClient(this.getApplicationContext());
-		//百度地图
-		MyLocationListener  mMyLocationListener = new MyLocationListener(getApplicationContext());
-        mLocationClient.registerLocationListener(mMyLocationListener);
-        SDKInitializer.initialize(getApplicationContext());
+		// 百度地图
+		MyLocationListener mMyLocationListener = new MyLocationListener(getApplicationContext());
+		mLocationClient.registerLocationListener(mMyLocationListener);
+		SDKInitializer.initialize(getApplicationContext());
 		setContentView(R.layout.activity_baidutest);
-		mMapView = (MapView) findViewById(R.id.bmapView);
-		mBaiduMap = mMapView.getMap();
-		mListview = (ListView) findViewById(R.id.myListview);
-		mListview.setOnItemClickListener(this);
-		adpter = new MyAdapter(getApplicationContext(), list);
-		mListview.setAdapter(adpter);
-		mEdit = (EditText) findViewById(R.id.mEdit);
-		mBtn = (Button) findViewById(R.id.mBtn);
-		mBtn.setOnClickListener(this);
+		initView();
+		// 关闭一切手势操作
+		UiSettings settings = mBaiduMap.getUiSettings();
+		settings.setAllGesturesEnabled(allgesturesenabled);
 		initLocation();
 		mLocationClient.start();// 定位SDK
 								// start之后会默认发起一次定位请求，开发者无须判断isstart并主动调用request
@@ -95,36 +93,45 @@ public class BaiduMapDemoActivity extends Activity implements OnClickListener,On
 		registerReceiver(receiver, filter);
 		// 搜索模块的初始化
 		mPoiSearch = PoiSearch.newInstance();
-		OnGetPoiSearchResultListener poiListener = new OnGetPoiSearchResultListener() {
-			public void onGetPoiResult(PoiResult result) {
-				// 获取POI检索结果
-				List<PoiInfo> allPoi = result.getAllPoi();
-				if(allPoi!=null){
-					for (int i = 0; i < allPoi.size(); i++) {
-						Map<Object, Object> map = new HashMap<Object, Object>();
-						map.put("title", allPoi.get(i).name);
-						map.put("addr", allPoi.get(i).address);
-						map.put("latitude", allPoi.get(i).location.latitude);
-						map.put("lontitude", allPoi.get(i).location.longitude);
-						list.add(map);
-					}
-					adpter.notifyDataSetChanged();
-				}else{
-					Toast.makeText(getApplicationContext(), "未搜索到相关信息", Toast.LENGTH_SHORT).show();
-				}
-				
-			}
+		mPoiSearch.setOnGetPoiSearchResultListener(this);
+	}
 
-			public void onGetPoiDetailResult(PoiDetailResult result) {
-				// 获取Place详情页检索结果
+	public void onGetPoiResult(PoiResult result) {
+		// 获取POI检索结果
+		List<PoiInfo> allPoi = result.getAllPoi();
+		if (allPoi != null) {
+			for (int i = 0; i < allPoi.size(); i++) {
+				Map<Object, Object> map = new HashMap<Object, Object>();
+				map.put("title", allPoi.get(i).name);
+				map.put("addr", allPoi.get(i).address);
+				map.put("latitude", allPoi.get(i).location.latitude);
+				map.put("lontitude", allPoi.get(i).location.longitude);
+				list.add(map);
 			}
-		};
-		mPoiSearch.setOnGetPoiSearchResultListener(poiListener);
+			adpter.notifyDataSetChanged();
+		} else {
+			Toast.makeText(getApplicationContext(), "未搜索到相关信息", Toast.LENGTH_SHORT).show();
+		}
+
+	}
+
+	public void onGetPoiDetailResult(PoiDetailResult result) {
+		// 获取Place详情页检索结果
+	}
+
+	public void initView() {
+		mMapView = (MapView) findViewById(R.id.bmapView);
+		mBaiduMap = mMapView.getMap();
+		mListview = (ListView) findViewById(R.id.myListview);
+		mListview.setOnItemClickListener(this);
+		adpter = new MyAdapter(getApplicationContext(), list);
+		mListview.setAdapter(adpter);
+		mEdit = (EditText) findViewById(R.id.mEdit);
+		mBtn = (Button) findViewById(R.id.mBtn);
+		mBtn.setOnClickListener(this);
 	}
 
 	public class MyLocationReceiver extends BroadcastReceiver {
-		private double last_latitude;
-		private double last_lontitude;
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -159,7 +166,7 @@ public class BaiduMapDemoActivity extends Activity implements OnClickListener,On
 		MarkerOptions ooA = new MarkerOptions().position(llA)
 				.icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_marka)).zIndex(9).draggable(true);
 		// 掉下动画
-		ooA.animateType(MarkerAnimateType.drop);
+		// ooA.animateType(MarkerAnimateType.drop);
 		mBaiduMap.addOverlay(ooA);
 	}
 
@@ -225,12 +232,21 @@ public class BaiduMapDemoActivity extends Activity implements OnClickListener,On
 		}
 
 	}
-	
 
 	@Override
 	public void onClick(View v) {
 		int id = v.getId();
 		if (id == R.id.mBtn) {
+			//先定位到当前，然后在查询热点
+			if(last_latitude!=-1&&last_lontitude!=-1){
+				position = new LatLng(last_latitude, last_lontitude);
+				// 定义地图状态
+				MapStatus mMapStatus = new MapStatus.Builder().target(position).zoom(18).build();
+				// 定义MapStatusUpdate对象，以便描述地图状态将要发生的变化
+				MapStatusUpdate mMapStatusUpdate = MapStatusUpdateFactory.newMapStatus(mMapStatus);
+				// 改变地图状态
+				mBaiduMap.setMapStatus(mMapStatusUpdate);
+			}
 			String key = mEdit.getText().toString().trim();
 			if (key == null || key.length() <= 0) {
 				Toast.makeText(getApplicationContext(), "请输入有效的关键字", Toast.LENGTH_LONG).show();
@@ -246,32 +262,33 @@ public class BaiduMapDemoActivity extends Activity implements OnClickListener,On
 			list.add(map);
 			// 进行搜索
 			// 搜索附近的poi
-			mPoiSearch.searchNearby(new PoiNearbySearchOption().location(position).keyword(key)
-					.radius(1000).pageNum(0).pageCapacity(10));
-			//将软件盘关闭
-			 InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-			 if(imm!=null&&mEdit!=null){
-				 imm.hideSoftInputFromWindow(mEdit.getWindowToken(),0);  
-			 }
+			mPoiSearch.searchNearby(new PoiNearbySearchOption().location(position).keyword(key).radius(1000).pageNum(0)
+					.pageCapacity(10));
+			// 将软件盘关闭
+			InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+			if (imm != null && mEdit != null) {
+				imm.hideSoftInputFromWindow(mEdit.getWindowToken(), 0);
+			}
 		}
 	}
 
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		Map<Object, Object> map = list.get(arg2);
-		double distance = DistanceUtil. getDistance(position, new LatLng((Double) map.get("latitude"), (Double) map.get("lontitude")));
-		if(distance>distance_limited){
-			Toast.makeText(getApplicationContext(), "该位置已经超出当前位置"+distance_limited+"m", Toast.LENGTH_LONG).show();
+		double distance = DistanceUtil.getDistance(position,
+				new LatLng((Double) map.get("latitude"), (Double) map.get("lontitude")));
+		if (distance > distance_limited) {
+			Toast.makeText(getApplicationContext(), "该位置已经超出当前位置" + distance_limited + "m", Toast.LENGTH_LONG).show();
 			return;
 		}
-		Intent intent=new Intent(); 
-		LocationItemInfo info = new LocationItemInfo((String)map.get("title"),(String)map.get("addr"),
-				(Double)map.get("latitude"), (Double)map.get("lontitude"));
+		Intent intent = new Intent();
+		LocationItemInfo info = new LocationItemInfo((String) map.get("title"), (String) map.get("addr"),
+				(Double) map.get("latitude"), (Double) map.get("lontitude"));
 		Bundle mBundle = new Bundle();
 		mBundle.putSerializable("iteminfo", info);
 		intent.putExtras(mBundle);
-        setResult(RESULT_OK, intent);  
-        finish(); 
+		setResult(RESULT_OK, intent);
+		finish();
 	}
 
 }

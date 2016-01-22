@@ -651,6 +651,8 @@ JPush的初始化 Application
 	Intent intent =new Intent(MainActivity.this,BaiduMapDemoActivity.class);
 	//限制返回的地点距离当前地点的范围,单位米,不设置默认是1000
 	intent.putExtra("distance_limited", 2000);
+    //设置百度地图是否可以滑动，默认是可以滑动的
+	intent.putExtra("allgesturesenabled", false);
 	startActivityForResult(intent, BAIDU_MAP);
     ===========================================================
 	@Override
@@ -669,5 +671,6 @@ JPush的初始化 Application
 			break;
 		}
     }
+<font color=red>备注：</font>点击关键字搜索，地图会先定位到当前，然后在进行关键字搜索
 
 
