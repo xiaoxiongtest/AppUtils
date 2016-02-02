@@ -3,7 +3,7 @@
 ## 目录
  * [集成的步骤](https://github.com/xiaoxiongtest/AppUtils#集成的步骤)
  * [MActivity](https://github.com/xiaoxiongtest/AppUtils#mactivity)
- * [RefreshListview](https://github.com/xiaoxiongtest/AppUtils#refreshlistview-下拉刷新上拉加载listview)
+ * [XListview](https://github.com/xiaoxiongtest/AppUtils#xlistview-下拉刷新上拉加载listview)
  * [关于listview的两个BaseAdapter集成](https://github.com/xiaoxiongtest/AppUtils#关于listview的两个baseadapter集成)
  * [ViewPager的集成](https://github.com/xiaoxiongtest/AppUtils#viewpager的集成)
  * [SlideShowView 轮播图](https://github.com/xiaoxiongtest/AppUtils#slideshowview-轮播图)
@@ -122,24 +122,32 @@
 		//获取数据成功进行处理
 	}
 
-##RefreshListview 下拉刷新，上拉加载listview
-	
-	listview.setOnRefreshListener(new OnRefreshListener() {
-		@Override
-		public void pullUpLoadMore() {
-			//上拉加载的监听
-		}
+##XListview 下拉刷新，上拉加载listview
 
-		@Override
-		public void pullDownRefresh() {
-			//下拉刷新的监听
-		}
-	});
+	<com.apputils.example.widget.XListView
+        android:id="@+id/listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+		listview = (XListView) findViewById(R.id.listview);
+		listview.setXListViewListener(new IXListViewListener() {
+			
+			@Override
+			public void onRefresh() {
+				//下拉刷新的监听
+			}
+			
+			@Override
+			public void onLoadMore() {
+				//上拉加载的监听
+			}
+		});
 	//设置上拉加载和下拉刷新是否可用
-	listview.setPullMoreEnable(false);
-	listview.setPullUpdateEnable(false);
+    listview.setPullRefreshEnable(false);
+	listview.setPullLoadEnable(false);
 	//监听事件处理结束，动画恢复需要调用的方法
-	listview.onFinish();
+	listview.stopRefresh();
+	listview.stopLoadMore();
 
 ##关于listview的两个BaseAdapter集成
 ###MyBaseAdapter
