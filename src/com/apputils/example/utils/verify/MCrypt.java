@@ -1,4 +1,4 @@
-package com.apputils.example.xmlencrypt;
+package com.apputils.example.utils.verify;
 
 import java.security.NoSuchAlgorithmException;
 
@@ -6,25 +6,25 @@ import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-
+import android.annotation.SuppressLint;
 import android.util.Base64;
 
 /**
- * AES���ܣ�AES/CBC/ZeroPadding 128λģʽ������Ϊ��L+\\~f4,Ir)b$=pkf�����ܺ�����Ҫ��ĩβ'\0'�ַ�
- * android ����ģʽ��AES/CBC/NOPadding ����key:12345678901234567890123456789012
+ * AES加密：AES/CBC/ZeroPadding 128位模式，默认向量为：L+\\~f4,Ir)b$=pkf android加密方式
+ * AES/CBC/NOPadding 加密key:12345678901234567890123456789012
  */
 public class MCrypt {
 
-	private String iv = "L+\\~f4,Ir)b$=pkf";
+	private static String iv = "L+\\~f4,Ir)b$=pkf";
 	private static IvParameterSpec ivspec;
 	private static SecretKeySpec keyspec;
 	private Cipher cipher;
-	private String secretKey = "12345678901234567890123456789012";
+	private static String secretKey = "12345678901234567890123456789012";
 	private static MCrypt mCrypt;
 	private static boolean inited;
 
 	/**
-	 * ����
+	 * 加密
 	 */
 	public static String cusEncrypt(String encryptStr) {
 		try {
@@ -34,12 +34,14 @@ public class MCrypt {
 		}
 		return null;
 	}
+
 	/**
-	 * ����
+	 * 解密
 	 */
 	public static String cusDecrypt(String decryptStr) {
 		try {
-			return new String(getInstance().decrypt(MCrypt.bytesToHex(Base64.decode(decryptStr, Base64.NO_WRAP)))).trim();
+			return new String(getInstance().decrypt(MCrypt.bytesToHex(Base64.decode(decryptStr, Base64.NO_WRAP))))
+					.trim();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -47,14 +49,30 @@ public class MCrypt {
 	}
 
 	/**
-	 * ���ܹ��ߵĳ�ʼ��
+	 * 设置向量和key
 	 * 
 	 * @param iv
-	 *            ����
+	 *            向量
 	 * @param secretKey
-	 *            ����key
+	 *            加密key
 	 */
 	public static void init(String iv, String secretKey) {
+		if (!inited) {
+			ivspec = new IvParameterSpec(iv.getBytes());
+			keyspec = new SecretKeySpec(secretKey.getBytes(), "AES");
+			inited = true;
+		}
+	}
+
+	/**
+	 * 设置向量和key
+	 * 
+	 * @param iv
+	 *            向量
+	 * @param secretKey
+	 *            加密key
+	 */
+	public static void init(String secretKey) {
 		if (!inited) {
 			ivspec = new IvParameterSpec(iv.getBytes());
 			keyspec = new SecretKeySpec(secretKey.getBytes(), "AES");
@@ -82,6 +100,7 @@ public class MCrypt {
 		}
 	}
 
+	@SuppressLint("TrulyRandom")
 	private byte[] encrypt(String text) throws Exception {
 		if (text == null || text.length() == 0)
 			throw new Exception("Empty string");
@@ -90,7 +109,6 @@ public class MCrypt {
 
 		try {
 			cipher.init(Cipher.ENCRYPT_MODE, keyspec, ivspec);
-
 			encrypted = cipher.doFinal(padString(text).getBytes());
 		} catch (Exception e) {
 			throw new Exception("[encrypt] " + e.getMessage());
@@ -155,7 +173,6 @@ public class MCrypt {
 		for (int i = 0; i < padLength; i++) {
 			source += paddingChar;
 		}
-
 		return source;
 	}
 }
