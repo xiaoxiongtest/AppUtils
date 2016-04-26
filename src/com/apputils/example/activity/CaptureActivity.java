@@ -28,8 +28,10 @@ import com.apputils.example.qr.decoding.InactivityTimer;
 import com.apputils.example.qr.view.ViewfinderView;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
+
 /**
  * Initial the camera
+ * 
  * @author Ryan.Tang
  */
 public class CaptureActivity extends Activity implements Callback {
@@ -51,7 +53,8 @@ public class CaptureActivity extends Activity implements Callback {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.camera);
-		//ViewUtil.addTopView(getApplicationContext(), this, R.string.scan_card);
+		// ViewUtil.addTopView(getApplicationContext(), this,
+		// R.string.scan_card);
 		CameraManager.init(getApplication());
 		viewfinderView = (ViewfinderView) findViewById(R.id.viewfinder_view);
 		cancelScanButton = (Button) this.findViewById(R.id.btn_cancel_scan);
@@ -84,10 +87,10 @@ public class CaptureActivity extends Activity implements Callback {
 			e.printStackTrace();
 		}
 		vibrate = true;
-		
-		//quit the scan view
+
+		// quit the scan view
 		cancelScanButton.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				CaptureActivity.this.finish();
@@ -110,9 +113,10 @@ public class CaptureActivity extends Activity implements Callback {
 		inactivityTimer.shutdown();
 		super.onDestroy();
 	}
-	
+
 	/**
 	 * Handler scan result
+	 * 
 	 * @param result
 	 * @param barcode
 	 */
@@ -122,17 +126,25 @@ public class CaptureActivity extends Activity implements Callback {
 		String resultString = result.getText();
 		if (resultString.equals("")) {
 			Toast.makeText(CaptureActivity.this, "扫描失败!", Toast.LENGTH_SHORT).show();
-		}else {
-			//将信息传输到上一个页面
-			Intent resultIntent = new Intent();
-			Bundle bundle = new Bundle();
-			bundle.putString("result", resultString);
-			resultIntent.putExtras(bundle);
-			this.setResult(RESULT_OK, resultIntent);
+		} else {
+			if (resultString.startsWith("uuid") || resultString.startsWith("active")) {
+				Intent resultIntent = new Intent();
+				Bundle bundle = new Bundle();
+				bundle.putString("result", resultString.substring(resultString.indexOf("=") + 1));
+				resultIntent.putExtras(bundle);
+				this.setResult(RESULT_OK, resultIntent);
+			}
 			CaptureActivity.this.finish();
 		}
+
+		/*
+		 * else { //将信息传输到上一个页面 Intent resultIntent = new Intent(); Bundle
+		 * bundle = new Bundle(); bundle.putString("result", resultString);
+		 * resultIntent.putExtras(bundle); this.setResult(RESULT_OK,
+		 * resultIntent); CaptureActivity.this.finish(); }
+		 */
 	}
-	
+
 	private void initCamera(SurfaceHolder surfaceHolder) {
 		try {
 			CameraManager.get().openDriver(surfaceHolder);
@@ -142,14 +154,12 @@ public class CaptureActivity extends Activity implements Callback {
 			return;
 		}
 		if (handler == null) {
-			handler = new CaptureActivityHandler(this, decodeFormats,
-					characterSet);
+			handler = new CaptureActivityHandler(this, decodeFormats, characterSet);
 		}
 	}
 
 	@Override
-	public void surfaceChanged(SurfaceHolder holder, int format, int width,
-			int height) {
+	public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
 
 	}
 
@@ -193,8 +203,7 @@ public class CaptureActivity extends Activity implements Callback {
 
 			AssetFileDescriptor file = getResources().getAssets().openFd("beep.ogg");
 			try {
-				mediaPlayer.setDataSource(file.getFileDescriptor(),
-						file.getStartOffset(), file.getLength());
+				mediaPlayer.setDataSource(file.getFileDescriptor(), file.getStartOffset(), file.getLength());
 				file.close();
 				mediaPlayer.setVolume(BEEP_VOLUME, BEEP_VOLUME);
 				mediaPlayer.prepare();

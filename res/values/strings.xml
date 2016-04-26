@@ -6,6 +6,10 @@
     <string name="weibosdk_demo_toast_share_failed">分享失败</string>
     <string name="weibosdk_demo_toast_share_canceled">取消分享</string>
     <string name="share_content">share_content</string>
+    <string name="pull_to_refresh_pull_label">下拉刷新...</string>
+    <string name="pull_to_refresh_release_label">释放刷新...</string>
+    <string name="pull_to_refresh_refreshing_label">正在刷新...</string>
+    <string name="pull_to_refresh_tap_label">准备刷新...</string>
     <string name="xlistview_header_hint_normal">下拉刷新</string>
     <string name="xlistview_header_hint_ready">松开刷新数据</string>
     <string name="xlistview_header_hint_loading">正在加载...</string>

@@ -1,10 +1,13 @@
 package com.apputils.example.http;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.apputils.example.manage.MHandler;
 import com.apputils.example.utils.MLog;
 import com.apputils.example.utils.NetWorkHelper;
+import com.apputils.example.utils.SharedPreferencesUitl;
 import com.apputils.example.utils.common.InitError;
 import com.apputils.example.utils.common.InitUrl;
 import com.google.gson.Gson;
@@ -25,6 +28,7 @@ import android.text.TextUtils;
 public class AccessNetUtils {
 	private static AccessNetUtils accessNetUtils;
 	private MActivity activity;
+	private Map<String,String> map = new HashMap<String,String> ();
 
 	public AccessNetUtils(MActivity activity) {
 		this.activity = activity;
@@ -89,22 +93,22 @@ public class AccessNetUtils {
 				}
 			}
 			// 检查是否有网络
-			if (NetWorkHelper.getNetWorkType(activity) == NetWorkHelper.NETWORKTYPE_INVALID) {
-				MHttpUtils.INITCONFIG.getMsgDialog(activity);
-				Message msg = new Message();
-				InitError notNetInfo = MHttpUtils.getNotNetInfo();
-				if (notNetInfo == null || notNetInfo.title == null || notNetInfo.value == null) {
-					InitError error = new InitError();
-					error.title = "警告";
-					error.value = "网络连接失败，请检查网络";
-					msg.obj = error;
-				} else {
-					msg.obj = notNetInfo;
-				}
-				msg.what = MHandler.MSG_SHOW_ERROR;
-				activity.getHandler().sendMessage(msg);
-				return;
-			}
+//			if (NetWorkHelper.getNetWorkType(activity) == NetWorkHelper.NETWORKTYPE_INVALID) {
+//				MHttpUtils.INITCONFIG.getMsgDialog(activity);
+//				Message msg = new Message();
+//				InitError notNetInfo = MHttpUtils.getNotNetInfo();
+//				if (notNetInfo == null || notNetInfo.title == null || notNetInfo.value == null) {
+//					InitError error = new InitError();
+//					error.title = "警告";
+//					error.value = "网络连接失败，请检查网络";
+//					msg.obj = error;
+//				} else {
+//					msg.obj = notNetInfo;
+//				}
+//				msg.what = MHandler.MSG_SHOW_ERROR;
+//				activity.getHandler().sendMessage(msg);
+//				return;
+//			}
 
 			MLog.D(MLog.TAG_HTTP, id + " " + (initUrl.type == 0 ? "get" : "post") + " " + url);
 
@@ -118,48 +122,59 @@ public class AccessNetUtils {
 
 						@Override
 						public void onFailure(HttpException arg0, String arg1) {
-							activity.getHandler().sendEmptyMessage(MHandler.MSG_CLOSE_DIALOG);
-							Message msg = new Message();
-							InitError error = new InitError();
-							error.title = "错误";
-							error.value = arg1;
-							msg.obj = error;
-							msg.what = MHandler.MSG_SHOW_ERROR;
-							activity.getHandler().sendMessage(msg);
+//							activity.getHandler().sendEmptyMessage(MHandler.MSG_CLOSE_DIALOG);
+//							Message msg = new Message();
+//							InitError error = new InitError();
+//							error.title = "错误";
+//							error.value = arg1;
+//							msg.obj = error;
+//							msg.what = MHandler.MSG_SHOW_ERROR;
+//							activity.getHandler().sendMessage(msg);
+							String json =SharedPreferencesUitl.getStringData(activity, id, null);
+//							if(map.get(id)==null){
+//								map.put(id, json);
+//							}else{
+//								json =null;
+//							}
+							jsonParser(id, json, callback,MActivity.IS_CACHE);
 						}
 
 						@Override
 						public void onSuccess(ResponseInfo<String> info) {
 							activity.getHandler().sendEmptyMessage(MHandler.MSG_CLOSE_DIALOG);
 							String json = info.result;
-							MLog.D(MLog.TAG_HTTP, json);
-							if (json != null && json.length() > 0) {
-								if (MHttpUtils.INITCONFIG.getJsonObject(id) != null) {
-									// json解析
-									Gson gson = new Gson();
-									Object obj = MHttpUtils.INITCONFIG.getJsonObject(id);
-									try {
-										callback.disResposeMMsg(id, gson.fromJson(json, obj.getClass()),
-												MActivity.SINGLE_OBJECT);
-									} catch (Exception e) {
-										try {
-											callback.disResposeMMsg(id, getJsonList(json, obj.getClass()),
-													MActivity.ARRAY_OBJECT);
-										} catch (Exception error) {
-											activity.showError("错误", "json数据解析错误");
-										}
-									}
-								} else {
-									MLog.D(MLog.TAG_HTTP, "返回的数据不是json");
-									callback.disResposeMMsg(id, json, MActivity.SINGLE_STRING);
-								}
-
-							} else {
-								MLog.D(MLog.TAG_HTTP, "未返回数据");
-								callback.disResposeMMsg(id, null, MActivity.SUCCESS_BUT_NODATA);
-							}
+							SharedPreferencesUitl.saveStringData(activity, id, json);
+							jsonParser(id, json, callback,-1);
 						}
 					});
+		}
+	}
+	public void jsonParser(String id,String json,DisResponseMsgCallBack callback,int type){
+		MLog.D(MLog.TAG_HTTP,""+json);
+		if (json != null && json.length() > 0) {
+			if (MHttpUtils.INITCONFIG.getJsonObject(id) != null) {
+				// json解析
+				Gson gson = new Gson();
+				Object obj = MHttpUtils.INITCONFIG.getJsonObject(id);
+				try {
+					callback.disResposeMMsg(id, gson.fromJson(json, obj.getClass()),type ==-1?
+							MActivity.SINGLE_OBJECT:type);
+				} catch (Exception e) {
+					try {
+						callback.disResposeMMsg(id, getJsonList(json, obj.getClass()),type ==-1?
+								MActivity.ARRAY_OBJECT:type);
+					} catch (Exception error) {
+						activity.showError("错误", "json数据解析错误");
+					}
+				}
+			} else {
+				MLog.D(MLog.TAG_HTTP, "返回的数据不是json");
+				callback.disResposeMMsg(id, json, type ==-1?MActivity.SINGLE_STRING:type);
+			}
+
+		} else {
+			MLog.D(MLog.TAG_HTTP, "未返回数据");
+			callback.disResposeMMsg(id, null, type ==-1?MActivity.SUCCESS_BUT_NODATA:type);
 		}
 	}
 

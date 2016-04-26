@@ -2,8 +2,6 @@
 <classpath>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="gen"/>
 	<classpathentry exported="true" kind="lib" path="libs/org.apache.http.legacy.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/xUtils-2.6.14.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/android-support-v4.jar"/>
@@ -15,6 +13,13 @@
 	<classpathentry exported="true" kind="lib" path="libs/open_sdk_r5509.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/weibosdkcore.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/zxingcore.jar"/>
+	<classpathentry kind="lib" path="libs/baidumapapi_base_v3_7_1.jar"/>
+	<classpathentry kind="lib" path="libs/baidumapapi_map_v3_7_1.jar"/>
+	<classpathentry kind="lib" path="libs/baidumapapi_search_v3_7_1.jar"/>
+	<classpathentry kind="lib" path="libs/baidumapapi_util_v3_7_1.jar"/>
+	<classpathentry kind="lib" path="libs/locSDK_6.13.jar"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

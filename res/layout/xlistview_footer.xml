@@ -7,7 +7,6 @@
         android:id="@+id/xlistview_footer_content"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
         android:padding="10dp" >
 
         <ProgressBar
@@ -22,7 +21,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="@string/xlistview_footer_hint_normal" />
+            android:text="@string/xlistview_footer_hint_normal" 
+            android:visibility="gone"/>
     </RelativeLayout>
 
 </LinearLayout>

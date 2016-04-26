@@ -11,6 +11,7 @@ import com.apputils.example.dialog.Loading;
 import com.apputils.example.dialog.MsgDialog;
 import com.apputils.example.http.AccessNetUtils;
 import com.apputils.example.http.MHttpUtils;
+import com.apputils.example.manage.Handles;
 import com.apputils.example.manage.MHandler;
 import com.apputils.example.manage.MHandler.HandleMsgLisnener;
 import com.apputils.example.utils.AbDisplayUtil;
@@ -58,6 +59,7 @@ public class MActivity extends Activity {
 	public static final int ARRAY_OBJECT = 1;
 	public static final int SINGLE_STRING = 2;
 	public static final int SUCCESS_BUT_NODATA =3;
+	public static final int IS_CACHE =4;
 	// 提示消息的id
 	private static final int NOTIFICATION_ID = 3;
 	public List<String> downing_list = new ArrayList<String>();
@@ -94,6 +96,7 @@ public class MActivity extends Activity {
 		AbDisplayUtil.init(this);
 		MHttpUtils.init(this);
 		handler = getHandler();
+		Handles.HANDLES.add(handler);
 		initdialog();
 		getHttpUtils();
 		//accessNetUtils = accessNetUtils.getInstance(this);

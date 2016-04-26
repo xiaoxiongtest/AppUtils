@@ -5,7 +5,8 @@ import android.os.Handler;
 import android.os.Message;
 
 public class Handles {
-	private ArrayList<MHandler> HANDLES = new ArrayList<MHandler>();
+	public final static ArrayList<MHandler> HANDLES = new ArrayList<MHandler>();
+	public final static Handles instance = new Handles();
 	
 	public void sendMsg(String id,Message msg){
 		for(MHandler handle : this.get(id)){

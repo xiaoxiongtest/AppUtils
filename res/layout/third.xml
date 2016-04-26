@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	qq_appid QQ分享的appid
+	sina_appkey 新浪分享的appkey
+	sina_redirect_url 新浪分享的回调
+	sina_scope 新浪的授权
+	wx_appid 微信分享的appid
+	
+	qq_enable="true" QQ分享是否可用
+	sina_enable="true" sina分享是否可用
+	wx_friendcricle_enable="true" 微信朋友圈是否可用
+	wx_friend_enable="true" 微信朋友是否可用
+	 
+
+ -->
+<ThirdKey qq_appid="1105036592"
+    	  sina_appkey="915263202"
+    	  wx_appid="wx9ec2fc3192f058f5"
+    	  qq_enable="111" 
+		  sina_enable="true" 
+		  wx_friendcricle_enable="true"
+	      wx_friend_enable="true"
+    	  >
+</ThirdKey>
